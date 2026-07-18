@@ -25,6 +25,8 @@ Timestamps are ISO 8601 text. Boolean fields are integers constrained to `0` or 
 
 The ledger remains after a down migration so `status` can report `0001_telemetry pending`.
 
+Applied versions are `0001_telemetry` and `0002_ledger`. Up runs in that order; down reverses the order.
+
 ## Experience tables
 
 ### `hx_sessions`
@@ -103,6 +105,43 @@ The ledger remains after a down migration so `status` can report `0001_telemetry
 
 `hx_audit_no_update` and `hx_audit_no_delete` abort UPDATE and DELETE, making rows append-only.
 
+## Task ledger
+
+Use `db/hx-task.sh <db-path> <subcommand>`. `create` requires an idempotency key, WORKPLAN task id, branch, and quoted completion criteria. `requeue` uses a 15-minute timeout unless the caller supplies another non-negative minute value.
+
+### `hx_tasks`
+
+| Column | Type | Meaning |
+|---|---|---|
+| `task_id` | TEXT PRIMARY KEY | Generated stable task identifier. |
+| `idempotency_key` | TEXT UNIQUE NOT NULL | Caller key that prevents duplicate task creation. |
+| `state` | TEXT NOT NULL | `queued`, `claimed`, `running`, `done`, `failed`, or `blocked`. |
+| `owner` | TEXT | Worker that claimed the task; cleared on a successful requeue. |
+| `workplan_ref` | TEXT NOT NULL | WORKPLAN task id such as `P1-F1-T4`. |
+| `branch` | TEXT NOT NULL | Feature branch assigned to the task. |
+| `done_criteria` | TEXT NOT NULL | Completion criteria carried by the assignment. |
+| `attempts` | INTEGER NOT NULL | Number of timeout requeues attempted. |
+| `max_attempts` | INTEGER NOT NULL | Highest attempts value that may return to `queued`; defaults to 2. |
+| `claimed_at` | TEXT | Most recent claim time; cleared on a successful requeue. |
+| `updated_at` | TEXT NOT NULL | Last state or progress time used for timeout checks. |
+| `detail` | TEXT | Latest progress, result, error, or timeout detail. |
+
+`hx_tasks_state_transition` allows only `queued → claimed → running → done|failed|blocked`. A timed `claimed` or `running` task returns to `queued` with `attempts + 1`; when the new value exceeds `max_attempts`, it moves to fixed `failed`. All other state updates abort.
+
+`hx_tasks_state_updated_idx` indexes `(state, updated_at)` for list and timeout scans. The unique constraint on `idempotency_key` and primary key on `task_id` create their own indexes.
+
+### `hx_task_messages`
+
+| Column | Type | Meaning |
+|---|---|---|
+| `id` | INTEGER PRIMARY KEY | Message row id. |
+| `task_id` | TEXT NOT NULL, FK | Owning `hx_tasks` row; cascades on task deletion. |
+| `ts` | TEXT NOT NULL | Message time. |
+| `kind` | TEXT NOT NULL | One of the eight SPEC 5.3 task/control message kinds. |
+| `payload` | TEXT NOT NULL | Assignment, owner, progress, result, error, or control detail. |
+
+Allowed kinds are `task.assign`, `task.claim`, `task.progress`, `task.result`, `task.error`, `ctrl.pause`, `ctrl.resume`, and `ctrl.kill`. `hx_task_messages_task_ts_idx` indexes `(task_id, ts)` for ordered task history.
+
 ## Full-text indexes
 
 ### `hx_prompts_fts`
@@ -113,4 +152,4 @@ FTS5 external-content index over `hx_prompts.content`, keyed by `hx_prompts.id`.
 
 FTS5 external-content index over `hx_skill_runs.skill_name` and `hx_skill_runs.outcome`, keyed by `hx_skill_runs.id`. The `hx_skill_runs_fts_ai`, `hx_skill_runs_fts_ad`, and `hx_skill_runs_fts_au` triggers synchronize inserts, deletes, and updates.
 
-Primary keys provide the only B-tree indexes in migration 0001. Additional indexes require workload evidence from P1-F1-T5.
+Primary keys provide the only B-tree indexes in migration 0001. Migration 0002 adds only the two task-ledger indexes described above. Additional indexes require workload evidence from P1-F1-T5.

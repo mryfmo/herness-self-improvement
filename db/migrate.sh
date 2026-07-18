@@ -10,6 +10,8 @@ set -eu
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 UP="$SCRIPT_DIR/migrations/0001_telemetry.up.sql"
 DOWN="$SCRIPT_DIR/migrations/0001_telemetry.down.sql"
+LEDGER_UP="$SCRIPT_DIR/migrations/0002_ledger.up.sql"
+LEDGER_DOWN="$SCRIPT_DIR/migrations/0002_ledger.down.sql"
 
 usage() {
     echo "usage: db/migrate.sh up|down|status <db-path>" >&2
@@ -20,7 +22,7 @@ usage() {
 ACTION=$1
 DB=$2
 
-[ -r "$UP" ] && [ -r "$DOWN" ] || {
+[ -r "$UP" ] && [ -r "$DOWN" ] && [ -r "$LEDGER_UP" ] && [ -r "$LEDGER_DOWN" ] || {
     echo "migration files are not readable" >&2
     exit 1
 }
@@ -43,15 +45,18 @@ case "$ACTION" in
         {
             echo "BEGIN IMMEDIATE;"
             cat "$UP"
+            cat "$LEDGER_UP"
             echo "INSERT OR IGNORE INTO hx_schema_migrations VALUES ('0001_telemetry', strftime('%Y-%m-%dT%H:%M:%fZ', 'now'));"
+            echo "INSERT OR IGNORE INTO hx_schema_migrations VALUES ('0002_ledger', strftime('%Y-%m-%dT%H:%M:%fZ', 'now'));"
             echo "COMMIT;"
         } | sqlite3 -cmd ".bail on" -cmd ".timeout 5000" -cmd "PRAGMA foreign_keys=ON;" "$DB"
         ;;
     down)
         {
             echo "BEGIN IMMEDIATE;"
+            cat "$LEDGER_DOWN"
             cat "$DOWN"
-            echo "DELETE FROM hx_schema_migrations WHERE version = '0001_telemetry';"
+            echo "DELETE FROM hx_schema_migrations WHERE version IN ('0002_ledger', '0001_telemetry');"
             echo "COMMIT;"
         } | sqlite3 -cmd ".bail on" -cmd ".timeout 5000" -cmd "PRAGMA foreign_keys=ON;" "$DB"
         ;;
