@@ -28,3 +28,9 @@ jobs:
           test -d .claude/hooks
           test -d .claude/commands
           test -d ci
+      - name: Test rules generator
+        run: python3 ci/test_generate_rules.py
+      - name: Check generated rules
+        run: |
+          python3 ci/generate-rules.py
+          git diff --exit-code -- CLAUDE.md AGENTS.md

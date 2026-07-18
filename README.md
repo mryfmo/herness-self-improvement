@@ -29,3 +29,7 @@ ci/                           lint・scan・eval・生成物検証
 単独運用では required approving reviews を 0 とし、mryfmo が承認ロールを兼任します。通常変更も feature branch で作成し、PR と必須 CI を通します。Claude Code orchestrator は Codex worker の成果物を独立・敵対的に検証し、自己改変を無人でマージしません。
 
 clone 後に `git config core.hooksPath githooks` を実行し、main への直接 push をローカルで拒否してください。制約とサーバー側設定の再現手順は [branch protection](docs/reference/branch-protection.md) を参照してください。
+
+## License
+
+Licensed under the Apache License 2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
