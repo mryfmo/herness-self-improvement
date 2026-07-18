@@ -16,3 +16,15 @@ jobs:
           test -f docs/specs/SPEC-HARNESS-SELF-IMPROVEMENT-v1.0.md
           test -f docs/reference/REPORT-HARNESS-SELF-IMPROVEMENT-v1.0.md
           test -f docs/decisions/ADR-HARNESS-SELF-IMPROVEMENT-v1.0.md
+      - name: Check repository skeleton
+        run: |
+          test -d docs/decisions
+          test -d docs/plans
+          test -d docs/specs
+          test -d docs/reference
+          test -d docs/lessons
+          test -d .claude/skills
+          test -d .claude/agents
+          test -d .claude/hooks
+          test -d .claude/commands
+          test -d ci
