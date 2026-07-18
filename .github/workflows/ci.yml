@@ -34,3 +34,5 @@ jobs:
         run: |
           python3 ci/generate-rules.py
           git diff --exit-code -- CLAUDE.md AGENTS.md
+      - name: Test telemetry migrations
+        run: ci/test_migrations.sh
