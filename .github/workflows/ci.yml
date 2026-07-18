@@ -38,3 +38,5 @@ jobs:
         run: ci/test_migrations.sh
       - name: Test task ledger
         run: ci/test_task_ledger.sh
+      - name: Smoke-test SQLite load
+        run: ci/test_sqlite_load.sh
