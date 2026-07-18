@@ -1,0 +1,18 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check relocated documents
+        run: |
+          test -f docs/plans/WORKPLAN-HARNESS-SELF-IMPROVEMENT-v1.0.md
+          test -f docs/plans/WORKPLAN-HARNESS-SELF-IMPROVEMENT-v1.1.md
+          test -f docs/specs/SPEC-HARNESS-SELF-IMPROVEMENT-v1.0.md
+          test -f docs/reference/REPORT-HARNESS-SELF-IMPROVEMENT-v1.0.md
+          test -f docs/decisions/ADR-HARNESS-SELF-IMPROVEMENT-v1.0.md
