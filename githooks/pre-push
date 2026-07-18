@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# @file githooks/pre-push
+# @brief Block direct pushes to main unless explicitly authorized.
+# @description
+#   Reads Git pre-push ref updates from stdin. Set ALLOW_MAIN_PUSH=1 only for
+#   approved bootstrap or recovery operations.
+# @arg $1 string Remote name provided by Git.
+# @arg $2 string Remote URL provided by Git.
+# @stderr Guidance to use the pull-request flow when a main push is blocked.
+# @exitcode 1 A direct push to main was blocked.
+# @exitcode 0 No main update was present, or the override was authorized.
+
+while read -r local_ref local_oid remote_ref remote_oid; do
+  if [ "$remote_ref" = "refs/heads/main" ] && [ "${ALLOW_MAIN_PUSH:-}" != "1" ]; then
+    echo "Direct pushes to main are blocked. Push a branch and open a pull request." >&2
+    exit 1
+  fi
+done
+
+exit 0

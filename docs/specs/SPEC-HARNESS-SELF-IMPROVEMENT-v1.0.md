@@ -4,7 +4,7 @@
 - Status: Draft（人間レビュー待ち）
 - 作成日: 2026-07-18
 - 対象読者: Claude Code（オーケストレーター、Fable-5 effort=high）/ Codex（ワーカー、gpt-5.6-sol effort=high）/ 部門関係者
-- 関連: REPORT-HARNESS-SELF-IMPROVEMENT-v1.0.md（意思決定根拠）/ WORKPLAN-HARNESS-SELF-IMPROVEMENT-v1.0.md（作業計画）/ ADR-HARNESS-SELF-IMPROVEMENT-v1.0.md（ADR-H001〜H006）
+- 関連: docs/reference/REPORT-HARNESS-SELF-IMPROVEMENT-v1.0.md（意思決定根拠）/ docs/plans/WORKPLAN-HARNESS-SELF-IMPROVEMENT-v1.0.md（作業計画）/ docs/decisions/ADR-HARNESS-SELF-IMPROVEMENT-v1.0.md（ADR-H001〜H006）
 - アーキテクチャ決定は本文に埋め込まず ADR を参照する（本書は要件と構造の記述に徹する）
 
 ---
