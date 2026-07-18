@@ -4,7 +4,7 @@
 - 作成日: 2026-07-18
 - 作成者: Claude Fable 5（調査・分析・意思決定担当）
 - 読者: 部門関係者、および後続の Claude Code（オーケストレーター）/ Codex（ワーカー）
-- 関連文書: SPEC-HARNESS-SELF-IMPROVEMENT-v1.0.md / WORKPLAN-HARNESS-SELF-IMPROVEMENT-v1.0.md / ADR-HARNESS-SELF-IMPROVEMENT-v1.0.md
+- 関連文書: docs/specs/SPEC-HARNESS-SELF-IMPROVEMENT-v1.0.md / docs/plans/WORKPLAN-HARNESS-SELF-IMPROVEMENT-v1.0.md / docs/decisions/ADR-HARNESS-SELF-IMPROVEMENT-v1.0.md
 
 ---
 

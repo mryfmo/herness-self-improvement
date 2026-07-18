@@ -1,23 +1,14 @@
-# WORKPLAN-HARNESS-SELF-IMPROVEMENT v1.1
+# WORKPLAN-HARNESS-SELF-IMPROVEMENT v1.0
 # Harness Engineering 自己改善システム — 作業計画書
 
 ## Status
 
-- 状態: 決裁反映済み・F1 着手可
+- Superseded by docs/plans/WORKPLAN-HARNESS-SELF-IMPROVEMENT-v1.1.md
+- 状態: Draft（人間レビュー待ち）
 - 作成日: 2026-07-18
-- 実行体制: Claude Code（orchestrator, Fable-5 effort=high）+ Codex（worker, gpt-5.6-sol effort=high）+ agmsg。Claude Code（本セッション系列）が、AGMSG-TASK / AGMSG-RESULT / AGMSG-ACCEPTANCE により Codex の herdr pane 常駐ワーカーを運用する。プロトコル詳細は SPEC 5.3 を参照。
-- 前提文書: SPEC-HARNESS-SELF-IMPROVEMENT-v1.0.md（要件・構造）/ ADR-HARNESS-SELF-IMPROVEMENT-v1.0.md（決定）
-- 表記: タスクは `P1-F<フェーズ>-T<タスク>`。未決の人間判断は残存決裁事項として明記する。各タスクに `Owner: orchestrator | worker` を必須付与。
-
-### Decision Log
-
-| # | 決裁日 | 決裁者 | 決裁 |
-|---|---|---|---|
-| 1 | 2026-07-18 | mryfmo | 本作業の成果物は既存 WORKPLAN の v1.1 改訂とする。 |
-| 2 | 2026-07-18 | mryfmo | GitHub private `mryfmo/herness-self-improvement` を現名で使用し、main 保護・PR 必須・CI 必須とする。 |
-| 3 | 2026-07-18 | mryfmo | mryfmo が部門管理者・プロジェクトオーナー・教訓判定者の全承認ロールを単独で兼任する。 |
-| 4 | 2026-07-18 | mryfmo | ADR-0001〜0006 を新規採番し、H001〜H006 を旧呼称として併記する。 |
-| 5 | 2026-07-18 | mryfmo | 本ディレクトリを `git init` して本体化し、4 文書は F1 で `docs/` へ移設する。 |
+- 実行体制: Claude Code（orchestrator, Fable-5 effort=high）+ Codex（worker, gpt-5.6-sol effort=high）+ agmsg
+- 前提文書: docs/specs/SPEC-HARNESS-SELF-IMPROVEMENT-v1.0.md（要件・構造）/ docs/decisions/ADR-HARNESS-SELF-IMPROVEMENT-v1.0.md（決定）
+- 表記: タスクは `P1-F<フェーズ>-T<タスク>`。人間判断が必要な値は `TBD(HUMAN)`。各タスクに `Owner: orchestrator | worker` を必須付与。
 
 ## Goal
 
@@ -29,15 +20,14 @@ SPEC 2 章に準拠。本計画は基盤構築と自己改善ループの稼働�
 
 ## Assumptions
 
-SPEC 3 章（A-1〜A-6）に準拠し、A-7 は以下の確定値で置き換える。追加:
-- 対象リポジトリは GitHub private `mryfmo/herness-self-improvement`。main 保護 + PR 必須 + CI 必須を設定する。
-- 単独運用とし、承認ロールはすべて mryfmo が兼任する。将来の複数人化は CODEOWNERS 導入で対応する。
-- NFR-01 の人間承認とは、自動生成 PR を mryfmo がレビュー・マージする行為を指す。単独運用でも自己改変は自動マージせず fail-closed を維持する。
+SPEC 3 章（A-1〜A-7）に準拠。追加:
+- 対象リポジトリ名・ホスティング先・保護ブランチ設定権限: TBD(HUMAN)
+- 承認者名簿（部門管理者・プロジェクトオーナー）: TBD(HUMAN)
 - 昇格閾値（利用回数 N・成功率 M%）とタイムアウト値の初期値: 本計画の既定値で開始し F9 で見直し
 
 ## Design
 
-SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照（本計画には再掲しない）。
+SPEC 5〜6 章および ADR-H001〜H006 を参照（本計画には再掲しない）。
 
 ## Current State
 
@@ -45,24 +35,6 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - agmsg: 稼働中（メッセージング機能のみ。テレメトリ/台帳スキーマ未拡張）
 - AIDD 由来ガバナンス部品（closed gates / data guards / evidence store）: 型付きコードとして存在、本リポジトリへの組込みは未実施
 - 既存 SKILLS 資産: 各プロジェクトに散在（ADR 作成スキル等）。棚卸し未実施
-
-## 依存関係・クリティカルパス
-
-- フェーズ依存: F1 → F2 → {F3, F4（並行可。いずれも F2 のドライランデータが前提）} → F5 → F6 → F7 → F8 → F9。
-- 前倒し可能: F8-T1 / F8-T2 / F8-T3 は F4 完了後であれば前倒しできる。
-- クリティカルパス: 固定カレンダー期間を持つ F2-T7（観測 2 週）→ F3-T6（還流 2 週）→ F4-T9（生成 2 週）→ F6-T7（最適化 4 週）→ F9-T7（無人 1 週）。実装工数と独立に最短約 11 週を要する。
-
-| マイルストーン | 到達条件 | 固定観測期間の目安 |
-|---|---|---|
-| M1 基盤完 | F1 受入 | なし |
-| M2 観測データ蓄積 | F2 受入 | 2 週 |
-| M3 還流ループ実証 | F3 受入 | 2 週 |
-| M4 生成パイプライン実証 | F4 受入 | 2 週 |
-| M5 全スキル標準化 | F5 受入 | なし |
-| M6 最適化ループ実証 | F6 受入 | 4 週 |
-| M7 3 層スコープ稼働 | F7 受入 | なし |
-| M8 ガバナンス完成 | F8 受入 | なし |
-| M9 運用移行 | F9 完了 | 1 週 |
 
 ## Implementation
 
@@ -72,15 +44,10 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 
 ### Phase F1: 基盤整備（リポジトリ骨格・SQLite スキーマ・CI 土台）
 
-**P1-F1-T0 リポジトリブートストラップ** — Owner: orchestrator
-- 作業: 本ディレクトリで `git init` → 初回コミット → `gh repo create mryfmo/herness-self-improvement --private` → push → main 保護 + PR 必須 + CI 必須（空 CI）設定を実施。4 文書を WORKPLAN → `docs/plans/`、SPEC → `docs/specs/`、REPORT → `docs/reference/`、ADR 束 → `docs/decisions/` へ移設し（ADR 分割は F1-T8）、文書間相互参照パスを更新する。
-- 検証: 保護設定により main への直接 push が拒否されること。相互参照リンクが解決すること。
-- 完了: 初回 PR がフロー経由でマージされ、以後全変更が PR 駆動になる。
-
 **P1-F1-T1 ハーネスリポジトリ骨格作成** — Owner: worker
 - 作業: SPEC 5.1 のディレクトリ構成（docs/ .claude/skills|agents|hooks|commands ci/）と README、保護ブランチ設定手順書を作成。
 - 検証: `tree` 出力が SPEC 5.1 と一致。CI が空実行で green。
-- 完了: main 保護 + PR 必須 + CI 必須が有効。
+- 完了: main 保護 + PR 必須 + CI 必須が有効（設定値は TBD(HUMAN) 承認後に適用）。
 
 **P1-F1-T2 rules.src.md と CLAUDE.md/AGENTS.md 生成器** — Owner: worker
 - 作業: 単一ソース rules.src.md から CLAUDE.md / AGENTS.md を生成するスクリプトと CI 検査（手編集検出・120 行超過警告）を実装（FR-13, NFR-06）。
@@ -112,19 +79,19 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 検証: リンク切れ・frontmatter 欠落を含むテスト PR が CI で fail。
 - 完了: 検査が必須 CI に組込み済み。
 
-**P1-F1-T8 ADR-0001〜0006（旧呼称 H001〜H006）の正式登録** — Owner: orchestrator
-- 作業: 別紙 ADR 6 件を `docs/decisions/ADR-NNNN-<slug>.md` として ADR-0001〜0006 に新規採番し、各本文冒頭に旧呼称 H001〜H006 を併記して登録。
+**P1-F1-T8 ADR-H001〜H006 の正式登録** — Owner: orchestrator
+- 作業: 別紙 ADR 6 件を docs/decisions/ へ、リポジトリの ADR 採番規約（既存 new-adr スキル規約に整合、開始番号は TBD(HUMAN)）で登録。
 - 検証: リンク検査合格。WORKPLAN/SPEC からの参照が解決。
-- 完了: 6 件が Accepted 状態でマージ（mryfmo 承認）。
+- 完了: 6 件が Accepted 状態でマージ（人間承認）。
 
 **P1-F1-T9 Phase F1 受入** — Owner: orchestrator
-- 作業: T0〜T8 の成果物横断レビュー、SPEC との差分一覧作成、mryfmo へ承認依頼。
+- 作業: T1〜T8 の成果物横断レビュー、SPEC との差分一覧作成、承認依頼。
 - 検証: 下記 Tests 全合格。
 - 完了: 下記 Done Criteria 充足を evidence store に記録。
 
 **F1 Tests**: リポジトリ CI green / スキーマ・台帳の全ユニットテスト合格 / 負荷試験基準達成 / 生成器・検査系の fail ケース実証。
-**F1 Done Criteria**: FR-01・FR-13・NFR-03・NFR-06 の土台が稼働。ADR 6 件 Accepted。リポジトリ設定・承認者・ADR 採番の決裁が反映済み。
-**F1 Open Questions**: agmsg DB の同居 or 分離 DB（負荷試験結果で判断、TBD(HUMAN)）/ marketplace リポジトリの分離時期。
+**F1 Done Criteria**: FR-01・FR-13・NFR-03・NFR-06 の土台が稼働。ADR 6 件 Accepted。TBD(HUMAN) 3 件（リポジトリ設定・承認者・ADR 採番）がクローズ。
+**F1 Open Questions**: agmsg DB の同居 or 分離 DB（負荷試験結果で判断）/ marketplace リポジトリの分離時期。
 
 ---
 
@@ -162,11 +129,11 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 
 **P1-F2-T7 2 週間の観測ドライラン** — Owner: orchestrator
 - 作業: 実業務セッションで収集のみ稼働（自動改変なし）。データ品質・マスキング漏れ・欠損をレビュー。
-- 検証: 欠損率 < 1%、マスキング漏れ 0 件（mryfmo による自己監査 30 件）。
+- 検証: 欠損率 < 1%、マスキング漏れ 0 件（サンプル監査 TBD(HUMAN) 件数）。
 - 完了: ドライランレポートを docs/lessons/ へ記録。
 
 **P1-F2-T8 Phase F2 受入** — Owner: orchestrator
-- 作業/検証/完了: F1 受入と同様の横断レビュー・mryfmo 承認・記録。
+- 作業/検証/完了: F1 受入と同様の横断レビュー・承認・記録。
 
 **F2 Tests**: 全 Hooks のイベント別ユニット/結合テスト / レイテンシ実測 / best-effort 動作 / 照合一致。
 **F2 Done Criteria**: FR-02 完全稼働。実データ 2 週間分が蓄積し、メトリクスが日次で出力される。
@@ -178,11 +145,11 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 
 **P1-F3-T1 reflector サブエージェント定義** — Owner: worker
 - 作業: 失敗・訂正・長時間セッションから教訓（事象 / 原因 / 対処 / 適用条件の 4 項目構造）を抽出する SubAgent を .claude/agents/ に定義。
-- 検証: ドライラン蓄積データ 20 セッションで教訓抽出。mryfmo のレビューで有用判定 ≥ 70%。
+- 検証: ドライラン蓄積データ 20 セッションで教訓抽出。人間レビューで有用判定 ≥ 70%（判定者 TBD(HUMAN)）。
 - 完了: 定義とプロンプトがマージ。抽出結果はまだ PR 化しない。
 
 **P1-F3-T2 curator サブエージェント定義（デルタ更新器）** — Owner: worker
-- 作業: 教訓を docs/lessons へのデルタ（追記・既存行更新・重複統合・陳腐化削除のいずれか 1 種別/変更）として構成する SubAgent を定義（ADR-0003、旧呼称 ADR-H003）。一括リライト検出（diff 比率 > 40% で mryfmo 承認へ格上げ）を CI 側に実装。
+- 作業: 教訓を docs/lessons へのデルタ（追記・既存行更新・重複統合・陳腐化削除のいずれか 1 種別/変更）として構成する SubAgent を定義（ADR-H003）。一括リライト検出（diff 比率 > 40% で要人間承認格上げ）を CI 側に実装。
 - 検証: 4 種別それぞれのデルタ生成をテストケースで確認。一括リライト PR が CI で格上げされる。
 - 完了: 定義 + CI 検査がマージ。
 
@@ -202,12 +169,12 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: 夜間ジョブに組込みマージ。
 
 **P1-F3-T6 還流ループ 2 週間試験運用** — Owner: orchestrator
-- 作業: 実データで還流 PR を運用し、mryfmo 承認でマージ。採択率・修正率を計測。
+- 作業: 実データで還流 PR を運用し、人間承認でマージ。採択率・修正率を計測。
 - 検証: 起票 PR のうち採択（そのまま/軽微修正でマージ）≥ 60%。重大な誤還流（事実誤り）0 件。
 - 完了: 試験運用レポートを docs/lessons/ へ記録。未達時は T1/T2 のプロンプト改訂後に 1 週間再試験。
 
 **P1-F3-T7 CLAUDE.md/AGENTS.md への反映経路** — Owner: worker
-- 作業: 恒久化された規範のうち「常時制約」該当分を rules.src.md へ反映する提案経路（curator → rules PR、常に mryfmo 承認）を実装。
+- 作業: 恒久化された規範のうち「常時制約」該当分を rules.src.md へ反映する提案経路（curator → rules PR、常に人間承認）を実装。
 - 検証: サンプル規範で rules PR が生成され、生成器経由で両ファイルが更新される。
 - 完了: 経路が文書化されマージ。
 
@@ -217,11 +184,11 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: 追跡手順が docs/reference/audit-trace.md に記載されマージ。
 
 **P1-F3-T9 Phase F3 受入** — Owner: orchestrator
-- 作業/検証/完了: 横断レビュー・Tests 全合格・mryfmo 承認・evidence 記録。
+- 作業/検証/完了: 横断レビュー・Tests 全合格・承認・evidence 記録。
 
 **F3 Tests**: デルタ 4 種別テスト / 一括リライト検出 / E2E 起票 / 追跡クエリ / 採択率実測。
 **F3 Done Criteria**: FR-03 稼働。Wiki が実データ由来の教訓で成長し、由来追跡が可能。
-**F3 Open Questions**: 採択率目標の恒久値（TBD(HUMAN)）/ lessons の粒度規約の追加要否。
+**F3 Open Questions**: 採択率目標の恒久値 / lessons の粒度規約の追加要否。
 
 ---
 
@@ -238,7 +205,7 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: 判定規則が docs/reference/generation-rules.md に記載されマージ。
 
 **P1-F4-T3 skill-drafter 実装** — Owner: worker
-- 作業: skill-creator 規約準拠の SKILL.md + scripts + eval/（ケース ≥ 3、合否判定スクリプト付き）を生成するドラフタを実装。既存スキル索引照合で重複回避。動的コンテキスト実行を含む出力の生成を禁止（ADR-0006、旧呼称 ADR-H006）。
+- 作業: skill-creator 規約準拠の SKILL.md + scripts + eval/（ケース ≥ 3、合否判定スクリプト付き）を生成するドラフタを実装。既存スキル索引照合で重複回避。動的コンテキスト実行を含む出力の生成を禁止（ADR-H006）。
 - 検証: サンプルパターン 5 件からドラフト生成。skill-lint（F4-T6）合格。動的コンテキスト混入テストで生成拒否。
 - 完了: ドラフタがマージ。
 
@@ -253,7 +220,7 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: `ci/skill-eval` が PR 必須チェックに登録されマージ。
 
 **P1-F4-T6 skill-lint / セキュリティスキャン** — Owner: worker
-- 作業: frontmatter 必須項目・命名規約・scope 検査、動的コンテキスト実行検出、scripts の到達先許可リスト照合、悪性パターン照合（MalSkillBench 系シグネチャ）、秘密情報検出を CI 化（FR-09、ADR-0006、旧呼称 ADR-H006）。
+- 作業: frontmatter 必須項目・命名規約・scope 検査、動的コンテキスト実行検出、scripts の到達先許可リスト照合、悪性パターン照合（MalSkillBench 系シグネチャ）、秘密情報検出を CI 化（FR-09、ADR-H006）。
 - 検証: 悪性サンプル（テスト専用に無害化したもの）10 件が全件 fail。正常スキルが pass。
 - 完了: 必須 CI 登録・検出規則の文書化を完了しマージ。
 
@@ -263,7 +230,7 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: ジョブ登録・運用手順書マージ。
 
 **P1-F4-T8 Hooks/Rules/SubAgent/Workflow ドラフト生成** — Owner: worker
-- 作業: SKILL 以外の 4 種別のドラフタ（Hook 設定 + スクリプト雛形、rules.src.md 追記案、SubAgent 定義、Workflow コマンド）を実装。Hooks/Rules は常に mryfmo 承認必須に固定。
+- 作業: SKILL 以外の 4 種別のドラフタ（Hook 設定 + スクリプト雛形、rules.src.md 追記案、SubAgent 定義、Workflow コマンド）を実装。Hooks/Rules は常に人間承認必須に固定。
 - 検証: 種別別サンプルでドラフト生成 → 各 lint 合格。
 - 完了: 4 種別が生成 PR フローに接続されマージ。
 
@@ -273,11 +240,11 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: レポート記録。未達時はスコアリング/ドラフタ改訂後 1 週間再試験。
 
 **P1-F4-T10 Phase F4 受入** — Owner: orchestrator
-- 作業/検証/完了: 横断レビュー・Tests 全合格・mryfmo 承認・evidence 記録。
+- 作業/検証/完了: 横断レビュー・Tests 全合格・承認・evidence 記録。
 
 **F4 Tests**: miner 再現率 / 種別判定 / 生成拒否（動的コンテキスト）/ verifier 合否分離 / eval 回帰検知 / スキャン検出 / E2E fail-closed 実証。
 **F4 Done Criteria**: FR-04・FR-05・FR-09 稼働。評価スイートが全スキルの必須ゲートになっている（F6 の前提）。
-**F4 Open Questions**: 採択率の恒久目標（TBD(HUMAN)）/ サロゲートタスクの自動抽出精度向上策。
+**F4 Open Questions**: 採択率の恒久目標 / サロゲートタスクの自動抽出精度向上策。
 
 ---
 
@@ -286,7 +253,7 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 **P1-F5-T1 SKILL.md frontmatter 標準 v1 確定** — Owner: orchestrator
 - 作業: description / triggers / scope / owner / freshness / 依存の必須化仕様を確定し既存スキル棚卸し対象を列挙。
 - 検証: 標準が Agent Skills 標準と非衝突であること（Codex 側でも無視されず動作）。
-- 完了: docs/reference/skill-frontmatter.md マージ（mryfmo 承認）。
+- 完了: docs/reference/skill-frontmatter.md マージ（人間承認）。
 
 **P1-F5-T2 既存スキル棚卸し・移行** — Owner: worker
 - 作業: 散在する既存スキルを収集し、標準 frontmatter 付与 + eval 付与（最低 1 ケース）+ scan 通過の上で本リポジトリ/所属スコープへ移行。
@@ -319,7 +286,7 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: 互換性レポートマージ。
 
 **P1-F5-T8 Phase F5 受入** — Owner: orchestrator
-- 作業/検証/完了: 横断レビュー・Tests 全合格・mryfmo 承認・evidence 記録。
+- 作業/検証/完了: 横断レビュー・Tests 全合格・承認・evidence 記録。
 
 **F5 Tests**: 索引精度 / スコープ提示 / Workflow E2E / 逸脱検出 / Codex 可搬性。
 **F5 Done Criteria**: FR-06 稼働。全スキルが標準 frontmatter + eval + scan 通過状態。
@@ -365,12 +332,12 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: レポート記録（改善幅の実測値を REPORT の残存リスク (b) への回答として記載）。
 
 **P1-F6-T8 diff 比率ガード恒久化** — Owner: worker
-- 作業: 一括リライト検出（>40% で mryfmo 承認へ格上げ）の対象を SKILLS 全域へ拡大し、閾値を設定ファイル化。
+- 作業: 一括リライト検出（>40% で人間承認格上げ）の対象を SKILLS 全域へ拡大し、閾値を設定ファイル化。
 - 検証: 閾値変更が設定のみで反映される。
 - 完了: マージ。
 
 **P1-F6-T9 Phase F6 受入** — Owner: orchestrator
-- 作業/検証/完了: 横断レビュー・Tests 全合格・mryfmo 承認・evidence 記録。
+- 作業/検証/完了: 横断レビュー・Tests 全合格・承認・evidence 記録。
 
 **F6 Tests**: トリガー発火 / 回帰 block / 重複・矛盾検出 / 廃止・ロールバック発火 / A/B 数値記載 / 4 週間非劣化実測。
 **F6 Done Criteria**: FR-07 稼働。「評価器なしの最適化は存在しない」状態（全最適化 PR が eval ゲート経由）。
@@ -381,9 +348,9 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 ### Phase F7: スコープ統合・昇格パイプライン
 
 **P1-F7-T1 marketplace リポジトリ構築** — Owner: worker
-- 作業: 全社スコープ Plugin の marketplace リポジトリを構築し、Claude Code 設定で社内 marketplace のみを許可・外部を無効化（FR-08, ADR-0006、旧呼称 ADR-H006）。
+- 作業: 全社スコープ Plugin の marketplace リポジトリを構築し、Claude Code 設定で社内 marketplace のみを許可・外部を無効化（FR-08, ADR-H006）。
 - 検証: 社内 Plugin の install/update が機能。外部 marketplace 追加が設定で拒否される。
-- 完了: 配布手順書マージ（mryfmo 承認）。
+- 完了: 配布手順書マージ（人間承認）。
 
 **P1-F7-T2 スコープ優先順位の実装検証** — Owner: worker
 - 作業: 同名/同 trigger スキルを 3 層に配置した衝突試験を作成し、優先順位（プロジェクト > 個人 > 全社）と命名接頭辞規約の遵守を検証。
@@ -396,7 +363,7 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: 夜間ジョブ登録マージ。
 
 **P1-F7-T4 汎化ドラフトと昇格 PR** — Owner: worker
-- 作業: curator が個人/プロジェクト固有要素（パス・固有名詞）を汎化した上位スコープ向けドラフトを作成し、昇格 PR（scan + eval + mryfmo 承認必須）を起票。
+- 作業: curator が個人/プロジェクト固有要素（パス・固有名詞）を汎化した上位スコープ向けドラフトを作成し、昇格 PR（scan + eval + 上位スコープ承認者必須）を起票。
 - 検証: サンプルスキルの昇格 E2E 完走。固有情報の残存 0 件（scan で検査）。
 - 完了: マージ。
 
@@ -411,12 +378,12 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: 配布手順マージ。
 
 **P1-F7-T7 パイロット 2 プロジェクト展開** — Owner: orchestrator
-- 作業: 本基盤を実プロジェクト 2 件（選定 TBD(HUMAN)。mryfmo の既存プロジェクトから F7 着手前に選定）へ導入し、スコープ運用を通し試験。
+- 作業: 本基盤を実プロジェクト 2 件（選定 TBD(HUMAN)）へ導入し、スコープ運用を通し試験。
 - 検証: 両プロジェクトで自己改善サイクルが 1 周完走。昇格 1 件以上成立。
 - 完了: 展開レポート記録。
 
 **P1-F7-T8 Phase F7 受入** — Owner: orchestrator
-- 作業/検証/完了: 横断レビュー・Tests 全合格・mryfmo 承認・evidence 記録。
+- 作業/検証/完了: 横断レビュー・Tests 全合格・承認・evidence 記録。
 
 **F7 Tests**: 衝突試験 / 昇格 E2E / 固有情報残存検査 / 個人層 scan / パイロット完走。
 **F7 Done Criteria**: FR-08 稼働。3 層が分離しつつ昇格・降格で接続された状態。
@@ -429,10 +396,10 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 **P1-F8-T1 PreToolUse deny-by-default 完成** — Owner: worker
 - 作業: 許可リスト外コマンド・リポジトリ外書込み・未許可ネットワークのブロック、およびハーネス artefact への PR フロー外書込み全ブロックを実装（F-GOV 4）。
 - 検証: ブロック対象 12 シナリオ全 block、許可対象 12 シナリオ全 pass（誤遮断なし）。
-- 完了: 必須 Hooks として登録マージ（mryfmo 承認）。
+- 完了: 必須 Hooks として登録マージ（人間承認）。
 
 **P1-F8-T2 自己改変防護（NFR-01）** — Owner: worker
-- 作業: 自己改善パイプラインのコード・CI 定義・Hooks 設定に対する変更 PR を自動検出し、自動マージ不可 + mryfmo 承認必須ラベルを強制。
+- 作業: 自己改善パイプラインのコード・CI 定義・Hooks 設定に対する変更 PR を自動検出し、自動マージ不可 + 人間承認必須ラベルを強制。
 - 検証: 該当パス変更 PR が例外なく格上げされる（バイパス試験含む）。
 - 完了: マージ。
 
@@ -464,7 +431,7 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 **P1-F8-T8 インシデント runbook** — Owner: orchestrator
 - 作業: 悪性スキル検出時・誤マージ時・暴走時の対応手順（kill switch → 隔離 → ロールバック → 事後分析 → lessons 還流）を docs/reference/ に整備。
 - 検証: 机上演習 1 回を実施し手順の欠落を修正。
-- 完了: runbook マージ（mryfmo 承認）。
+- 完了: runbook マージ（人間承認）。
 
 **P1-F8-T9 障害注入試験（フェイルセーフ）** — Owner: worker
 - 作業: SQLite ロック・ワーカー無応答・PR API 障害・ディスク枯渇の 4 障害を注入し、requeue・冪等・best-effort の各挙動を検証（NFR-04）。
@@ -472,7 +439,7 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: 試験レポートマージ。
 
 **P1-F8-T10 Phase F8 受入** — Owner: orchestrator
-- 作業/検証/完了: 横断レビュー・Tests 全合格・mryfmo 承認・evidence 記録。
+- 作業/検証/完了: 横断レビュー・Tests 全合格・承認・evidence 記録。
 
 **F8 Tests**: deny 24 シナリオ / 自己改変格上げ / kill switch 実測 / 改変検知 / レッドチーム / 障害注入 4 種。
 **F8 Done Criteria**: FR-09〜FR-12・NFR-01/02/04 完成。SPEC 6.5 の 7 制御が全稼働。
@@ -483,7 +450,7 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 ### Phase F9: 総合受入・運用移行
 
 **P1-F9-T1 E2E シナリオ総合試験** — Owner: orchestrator
-- 作業: 「新規繰り返し業務の発生 → パターン検出 → スキル自動生成 PR → mryfmo 承認 → 利用 → 訂正発生 → 自動最適化 PR → 昇格」の全周シナリオを実データで完走させる。
+- 作業: 「新規繰り返し業務の発生 → パターン検出 → スキル自動生成 PR → 承認 → 利用 → 訂正発生 → 自動最適化 PR → 昇格」の全周シナリオを実データで完走させる。
 - 検証: 全段が evidence で追跡可能・fail-closed 逸脱 0。
 - 完了: 完走記録マージ。
 
@@ -494,55 +461,47 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 
 **P1-F9-T3 運用ドキュメント一式** — Owner: worker
 - 作業: 管理者ガイド・利用者ガイド・承認者ガイド・runbook 索引を docs/ に整備し、CLAUDE.md/AGENTS.md のマップを最終化。
-- 検証: クリーン環境（新規マシン相当）で mryfmo がドキュメントのみを頼りにセットアップ〜スキル提案まで到達するセルフオンボーディング試験を実施。
+- 検証: 新規参加者 1 名（TBD(HUMAN)）がドキュメントのみでセッション開始〜スキル提案まで到達。
 - 完了: マージ。
 
 **P1-F9-T4 閾値・既定値の本値確定** — Owner: orchestrator
-- 作業: 本計画中の既定値（起票上限 5、diff 40%、昇格 N=10/M=80、タイムアウト 15 分、未使用 90 日ほか）を試験運用実測に基づき提案し、mryfmo の決裁を得る。
-- 検証: 全残存決裁事項に決裁記録が存在。
+- 作業: 本計画中の既定値（起票上限 5、diff 40%、昇格 N=10/M=80、タイムアウト 15 分、未使用 90 日ほか）を試験運用実測に基づき提案し、人間決裁を得る。
+- 検証: 全 TBD(HUMAN) 項目に決裁記録が存在。
 - 完了: 設定ファイル反映マージ。
 
 **P1-F9-T5 残課題・v2 ロードマップ** — Owner: orchestrator
-- 作業: Open Questions の棚卸し、外部メモリ拡張（ADR-0002、旧呼称 ADR-H002 の再評価条件）・マルチホスト化の判断材料整理。
+- 作業: Open Questions の棚卸し、外部メモリ拡張（ADR-H002 再評価条件）・マルチホスト化の判断材料整理。
 - 検証: 全 Open Question が「解決 / v2 送り / 受容」のいずれかに分類済み。
 - 完了: docs/plans/roadmap-v2.md マージ。
 
 **P1-F9-T6 総合受入判定** — Owner: orchestrator
-- 作業: FR-01〜13 / NFR-01〜08 の充足マトリクスを作成し、mryfmo の最終承認を得る。
+- 作業: FR-01〜13 / NFR-01〜08 の充足マトリクスを作成し最終承認を得る。
 - 検証: 全項目が証跡付きで判定済み。
-- 完了: 受入判定書を evidence store へ記録（mryfmo 承認）。
+- 完了: 受入判定書を evidence store へ記録（人間承認）。
 
 **P1-F9-T7 運用移行・引継ぎ** — Owner: orchestrator
-- 作業: 日常運用（mryfmo による承認運用・監査レビュー・レッドチーム周期）の体制を確定し引継ぎ。
+- 作業: 日常運用（承認当番・監査レビュー・レッドチーム周期）の体制を確定し引継ぎ。
 - 検証: 移行後 1 週間、人手介入なしで夜間ジョブ群が正常完走。
 - 完了: 引継ぎ完了を記録し本計画をクローズ。
 
-**F9 Tests**: E2E 全周 / NFR 最終実測 / セルフオンボーディング / 無人 1 週間安定稼働。
+**F9 Tests**: E2E 全周 / NFR 最終実測 / 新規参加者オンボーディング / 無人 1 週間安定稼働。
 **F9 Done Criteria**: Goal 達成（自己改善サイクルが本番で 1 周以上完走し、運用体制へ移行済み）。
 **F9 Open Questions**: なし（T5 で全件分類済みであること自体が完了条件）。
 
 ---
 
-## Open Questions / 決裁事項一覧
+## Open Questions / TBD(HUMAN) 一覧
 
-### 決裁済み
-
-| # | 項目 | 決裁内容 |
-|---|---|---|
-| 1 | 対象リポジトリ名・ホスティング・保護ブランチ設定 | GitHub private `mryfmo/herness-self-improvement`、main 保護 + PR 必須 + CI 必須。 |
-| 2 | 承認者名簿 | mryfmo が部門管理者・プロジェクトオーナーを単独兼任。 |
-| 3 | ADR 採番 | ADR-0001〜0006 を新規採番し、H001〜H006 を旧呼称として併記。 |
-| 6 | 教訓有用判定の判定者 | mryfmo。 |
-| 9（承認者） | 昇格 PR の上位スコープ承認者 | mryfmo。 |
-
-### 残存決裁事項
-
-| # | 項目 | 初出 | 決裁期限の目安 | 状態 |
-|---|---|---|---|---|
-| 4 | agmsg DB 同居 or 分離（負荷試験結果次第） | F1 OQ | F1 末 | TBD(HUMAN) |
-| 5 | テレメトリ保持期間・匿名化ポリシー・監査サンプル数 | F2 | F2 末 | TBD(HUMAN) |
-| 7 | 生成 PR 採択率・還流採択率の恒久目標 | F3/F4 OQ | F9-T4 | TBD(HUMAN) |
-| 8 | 失敗率閾値・未使用日数・昇格閾値（N, M%）などの恒久値 | F6/F7 OQ | F9-T4 | TBD(HUMAN) |
-| 10 | レッドチーム定期周期 | F8 OQ | F9-T4 | TBD(HUMAN) |
-| 11 | タスクタイムアウト等プロトコル既定値の本値 | SPEC 5.3 | F9-T4 | TBD(HUMAN) |
-| パイロット選定 | パイロット 2 プロジェクト | F7-T7 | F7 着手前 | TBD(HUMAN) |
+| # | 項目 | 初出 | 決裁期限の目安 |
+|---|---|---|---|
+| 1 | 対象リポジトリ名・ホスティング・保護ブランチ設定 | F1-T1 | F1 着手前 |
+| 2 | 承認者名簿（部門管理者・プロジェクトオーナー） | Assumptions | F1 中 |
+| 3 | ADR 採番の開始番号（既存規約との整合） | F1-T8 | F1 中 |
+| 4 | agmsg DB 同居 or 分離（負荷試験結果次第） | F1 OQ | F1 末 |
+| 5 | テレメトリ保持期間・匿名化ポリシー・監査サンプル数 | F2 | F2 末 |
+| 6 | 教訓有用判定の判定者 | F3-T1 | F3 着手前 |
+| 7 | 生成 PR 採択率・還流採択率の恒久目標 | F3/F4 OQ | F9-T4 |
+| 8 | 失敗率閾値・未使用日数など F6 恒久値 | F6 OQ | F9-T4 |
+| 9 | 昇格閾値（N, M%）恒久値・パイロット 2 プロジェクト選定 | F7 | F7 着手前 |
+| 10 | レッドチーム定期周期 | F8 OQ | F9-T4 |
+| 11 | タスクタイムアウト等プロトコル既定値の本値 | SPEC 5.3 | F9-T4 |
