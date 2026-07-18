@@ -1,5 +1,9 @@
 # Branch protection
 
+## Rationale
+
+[WORKPLAN v1.1 の Decision Log #2](../plans/WORKPLAN-HARNESS-SELF-IMPROVEMENT-v1.1.md#decision-log) は、private repository `mryfmo/herness-self-improvement` の main 保護、PR 必須、CI 必須を決定している。単独運用のため required approving reviews は 0 とし、それ以外の変更経路と破壊操作は制限する。
+
 ## Current limitation
 
 GitHub Free の private repository では branch protection と repository ruleset API が HTTP 403 を返す。サーバー側保護の有効化は、GitHub Pro 化または public 化に関するユーザー決裁待ちとする。
@@ -12,9 +16,9 @@ GitHub Free の private repository では branch protection と repository rules
 
 `ALLOW_MAIN_PUSH=1` は承認済み bootstrap または復旧操作だけに使用する。
 
-## Server-side migration
+## Server-side reproduction
 
-サーバー側保護が利用可能になったら、次の設定を適用し、PR 必須、required status check `ci`、force-push/削除禁止、required approving reviews 0 を有効にする。
+サーバー側保護を利用できるプランになったら、repository 管理者として次を実行する。PR 必須、required status check `ci`、force-push/削除禁止、required approving reviews 0 を再現する。
 
 ```sh
 jq -n '{
