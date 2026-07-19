@@ -1,3 +1,4 @@
+Status: 分割登録済み(ADR-0001〜0006 参照)。本書は審議時の歴史的資料。
 # ADR-HARNESS-SELF-IMPROVEMENT v1.0（ADR 束）
 
 本ファイルは審議用の束。承認後、対象リポジトリの ADR 規約（new-adr スキル規約、採番開始 TBD(HUMAN)）に従い 1 決定 1 ファイルへ分割して登録する（WORKPLAN P1-F1-T8）。各 ADR の形式: Status / Context / Decision / Consequences / 根拠。
