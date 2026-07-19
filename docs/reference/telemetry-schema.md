@@ -121,6 +121,29 @@ Applied versions are `0001_telemetry` and `0002_ledger`. Up runs in that order; 
 
 `hx_audit_no_update` and `hx_audit_no_delete` abort UPDATE and DELETE, making rows append-only.
 
+## Daily reconciliation
+
+Run `ci/hx-reconcile.sh <db-path> [--date YYYY-MM-DD]` to compare one UTC
+day of source rows with its audit snapshot. The date defaults to the current
+UTC day. The first run appends `event=telemetry.reconcile` with the counts
+below. A later run with different counts appends
+`event=telemetry.reconcile.mismatch` and exits nonzero. Repeating the same
+mismatch does not append another row.
+
+| Count | Source |
+|---|---|
+| `session_start` / `stop` | `hx_sessions.started_at` / `ended_at` |
+| `prompt_submit` | `hx_prompts.ts` |
+| `post_tool_use` / `subagent_stop` | `hx_tool_events.ts`, split by `tool='subagent'` |
+| `skill_run` / `correction` | `hx_skill_runs.ts`; corrected runs use the original run date because correction time is not stored |
+| `metrics_daily` | `hx_audit` rows with `event=metrics.daily` and `ref=<date>` |
+| `failures_recovered` | `hx_audit` rows with `event=telemetry.failures.recovered` |
+| `task_rows` / `task_messages` | `hx_tasks.updated_at` / `hx_task_messages.ts` |
+
+GitHub Actions runs `ci/test_reconcile.sh` against synthetic data only. The
+live database is local and is not available to a hosted runner. F3-T3 must
+schedule the live command in its local nightly job under the kill switch.
+
 ## Task ledger
 
 Use `db/hx-task.sh <db-path> <subcommand>`. `create` requires an idempotency key, WORKPLAN task id, branch, and quoted completion criteria. `requeue` uses a 15-minute timeout unless the caller supplies another non-negative minute value.
