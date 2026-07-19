@@ -1,0 +1,4 @@
+githooks/
+ci/
+db/
+.github/workflows/

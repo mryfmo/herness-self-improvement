@@ -40,3 +40,9 @@ jobs:
         run: ci/test_task_ledger.sh
       - name: Smoke-test SQLite load
         run: ci/test_sqlite_load.sh
+      - name: Test evidence and gates
+        run: ci/test_evidence_gates.sh
+      - name: Verify frozen paths
+        run: ci/hash-freeze.py verify
+      - name: Scan secrets
+        run: ci/secret-scan.py
