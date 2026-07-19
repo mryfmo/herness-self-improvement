@@ -1,7 +1,7 @@
 {
   "algorithm": "sha256",
   "files": {
-    ".github/workflows/ci.yml": "e4509fc347bc3adf344fa1019143b75b5bcd4768f92108f7094ef74baba1def8",
+    ".github/workflows/ci.yml": "f0c3292c2a558cb59207dd020d0429dc125cef40518a31a758648783a9f7197e",
     "ci/.gitkeep": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
     "ci/check-docs.py": "c14cfbf322a6cf4b8f10e7d0217712e49c74602c4ec07e56005084425c5f1968",
     "ci/docs-frontmatter-exempt.txt": "9b910cedc4c5d156b6b519c91098629d064e9543ae03971bc2c4f0fa044876ee",
@@ -14,12 +14,14 @@
     "ci/secret-allowlist.txt": "108023d6dbe60b96fbcc814df18be46662ffda0205861aad966a3ec563aa2137",
     "ci/secret-scan.py": "de984803af5b434e6a9ce69d30998bcdbe78b503a531fc600d260749872f4749",
     "ci/secret_patterns.py": "88ae630e3ba651a185979d973dbb98a177b1a03e40e27c7feae24a06f10839ef",
+    "ci/skill-scan.py": "2d4c2eb2ebe57c9fff5383e23e8134962905fed31370f1e03b3e5dc099360379",
     "ci/test_check_docs.py": "0da8495525a76b17b724edc37417681f1eb37bb2a1c9bd579f241fbd288b95c1",
     "ci/test_evidence_gates.sh": "24cb946813fed5e20537e2a0d85f1567f878c1c8f41fe40f08603b3b24aa0415",
     "ci/test_generate_rules.py": "66bb0ed5993d7d04524fde5d4daec39f5c6a911678566468618685bb929bd994",
     "ci/test_metrics.sh": "9407297e1847977dce1647b5e9effb56f5707937ba6546a5f6320a873f3f56cd",
     "ci/test_migrations.sh": "504a57b6f1ea5a6db6f90902e4b561cab7409512c7e0b14c66378490296276b4",
     "ci/test_reconcile.sh": "8cef498b1b4ff0acc649bd8281c5b070e3b37ed8b1ce3d5383eeb850eee0cb3b",
+    "ci/test_skill_scan.py": "51ba63e025080ec0265751388e700ad5257a9a5743c57cd9a4d8669da05adf5c",
     "ci/test_sqlite_load.sh": "4f6de0c00bc18c9ee7eccffe1cd60dc8c5ea8136f76332e466ec83fbf2549193",
     "ci/test_task_ledger.sh": "9c5ca3ca54a0b04cb8407f521f521f8f2e1ac74addf275a83c61c13274d21241",
     "ci/test_telemetry_hooks.sh": "38a7fe9c78f53c4de4656ab6edd201060403c778fb470288b9d1d9fbd049f902",
