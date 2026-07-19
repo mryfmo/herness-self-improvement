@@ -10,6 +10,7 @@ set -u
 
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
 PARSER="$ROOT/ci/hx_hook_fields.py"
+CORRECTION_MARKERS="$ROOT/.claude/hooks/hx-correction-markers.txt"
 STORAGE="$HOME/.agents/skills/agmsg/scripts/lib/storage.sh"
 FAILURE_LOG=${HX_FAILURE_LOG:-"$HOME/.agents/hx/telemetry-failures.log"}
 
@@ -30,6 +31,24 @@ resolve_db() {
 record_failure() {
     mkdir -p "$(dirname -- "$FAILURE_LOG")" 2>/dev/null || return
     printf '%s event=%s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" "$1" >>"$FAILURE_LOG"
+}
+
+# @description Return whether masked prompt content matches a correction marker.
+# @arg $1 content_hex Hex-encoded prompt content.
+# @stdout 1 for a match, otherwise 0.
+is_correction() {
+    python3 -c '
+import re
+import sys
+
+text = bytes.fromhex(sys.argv[2]).decode()
+patterns = [
+    line.strip()
+    for line in open(sys.argv[1], encoding="utf-8")
+    if line.strip() and not line.lstrip().startswith("#")
+]
+print(int(any(re.search(pattern, text) for pattern in patterns)))
+' "$CORRECTION_MARKERS" "$1"
 }
 
 # @description Parse tool and stop events into SQL-safe hex and integer fields.
@@ -79,6 +98,8 @@ status = ""
 duration = "NULL"
 exit_code = "NULL"
 error_summary = ""
+skill_name = ""
+scope = ""
 
 if event == "post-tool-use":
     tool = text("tool_name", required=True)
@@ -101,6 +122,16 @@ if event == "post-tool-use":
     if stderr is not None and not isinstance(stderr, str):
         raise ValueError("stderr")
     error_summary = mask_text(stderr or "")[0][:200]
+    if tool == "Skill":
+        tool_input = data.get("tool_input")
+        if not isinstance(tool_input, dict):
+            raise ValueError("tool_input")
+        skill_name = tool_input.get("skill")
+        if not isinstance(skill_name, str) or not skill_name:
+            raise ValueError("skill")
+        scope = tool_input.get("scope")
+        if not isinstance(scope, str) or not scope:
+            scope = "unknown"
 elif event == "stop":
     status = "completed"
 elif event == "subagent-stop":
@@ -109,9 +140,9 @@ elif event == "subagent-stop":
 else:
     raise ValueError("event")
 
-values = (session_id, project, tool, status, error_summary)
+values = (session_id, project, tool, status, error_summary, skill_name, scope)
 encoded = [value.encode().hex() for value in values]
-print("|".join([*encoded[:4], duration, exit_code, encoded[4]]))
+print("|".join([*encoded[:4], duration, exit_code, *encoded[4:]]))
 ' "$1" "$ROOT/ci"
 }
 
@@ -146,7 +177,7 @@ $fields
 EOF
             ;;
         *)
-            read -r session_hex project_hex tool_hex status_hex duration exit_code error_hex <<EOF
+            read -r session_hex project_hex tool_hex status_hex duration exit_code error_hex skill_hex scope_hex <<EOF
 $fields
 EOF
             ;;
@@ -164,6 +195,31 @@ VALUES
 "
             ;;
         prompt-submit)
+            correction=$(is_correction "$content_hex") || {
+                record_failure "$event"
+                return
+            }
+            correction_sql=
+            if [ "$correction" = 1 ]; then
+                window=${HX_CORRECTION_WINDOW_MIN:-15}
+                case "$window" in
+                    ''|*[!0-9]*)
+                        record_failure "$event"
+                        return
+                        ;;
+                esac
+                correction_sql="
+UPDATE hx_skill_runs
+SET corrected = 1
+WHERE id = (
+    SELECT id
+    FROM hx_skill_runs
+    WHERE session_id = CAST(X'$session_hex' AS TEXT)
+      AND julianday(ts) >= julianday('now', '-$window minutes')
+    ORDER BY julianday(ts) DESC, id DESC
+    LIMIT 1
+);"
+            fi
             sql="
 INSERT OR IGNORE INTO hx_sessions
     (session_id, agent_type, project, started_at, status)
@@ -174,9 +230,20 @@ INSERT INTO hx_prompts (session_id, ts, role, content, masked)
 VALUES
     (CAST(X'$session_hex' AS TEXT), strftime('%Y-%m-%dT%H:%M:%fZ', 'now'),
      'user', CAST(X'$content_hex' AS TEXT), $masked);
+$correction_sql
 "
             ;;
         post-tool-use|subagent-stop)
+            skill_sql=
+            if [ -n "$skill_hex" ]; then
+                skill_sql="
+INSERT INTO hx_skill_runs
+    (session_id, ts, skill_name, scope, outcome)
+VALUES
+    (CAST(X'$session_hex' AS TEXT), strftime('%Y-%m-%dT%H:%M:%fZ', 'now'),
+     CAST(X'$skill_hex' AS TEXT), CAST(X'$scope_hex' AS TEXT),
+     CAST(X'$status_hex' AS TEXT));"
+            fi
             sql="
 INSERT OR IGNORE INTO hx_sessions
     (session_id, agent_type, project, started_at, status)
@@ -189,6 +256,7 @@ VALUES
     (CAST(X'$session_hex' AS TEXT), strftime('%Y-%m-%dT%H:%M:%fZ', 'now'),
      CAST(X'$tool_hex' AS TEXT), CAST(X'$status_hex' AS TEXT),
      $duration, $exit_code, NULLIF(CAST(X'$error_hex' AS TEXT), ''));
+$skill_sql
 "
             ;;
         stop)
