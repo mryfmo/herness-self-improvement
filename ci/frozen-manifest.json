@@ -1,13 +1,16 @@
 {
   "algorithm": "sha256",
   "files": {
-    ".github/workflows/ci.yml": "deba9e55af3c528add45af125cd8db2c68ad785b8c694e8c2bc3010d037b2a0f",
+    ".github/workflows/ci.yml": "86e163a57de0e68c83d26a1c6c443f206b81347be0930aa2ece5e709f43f17b4",
     "ci/.gitkeep": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "ci/check-docs.py": "c14cfbf322a6cf4b8f10e7d0217712e49c74602c4ec07e56005084425c5f1968",
+    "ci/docs-frontmatter-exempt.txt": "9b910cedc4c5d156b6b519c91098629d064e9543ae03971bc2c4f0fa044876ee",
     "ci/frozen-paths.txt": "84a7253bfbd6bd56ef34ca52150a3c7e19343eade2cbf927af5b81d13bf9c9a3",
     "ci/generate-rules.py": "f16438736190c8d9a2d233904c00d02754c22e45f7e52ede474ff59100f6cc65",
     "ci/hash-freeze.py": "dba1617d94ba8a65321167d847f969bb4628991b8b45fba218c1ff672a5e8358",
     "ci/secret-allowlist.txt": "108023d6dbe60b96fbcc814df18be46662ffda0205861aad966a3ec563aa2137",
     "ci/secret-scan.py": "8906187209e77a156f7044511d4db51ecf4b45c321540f0e1b4ba0ab21604076",
+    "ci/test_check_docs.py": "0da8495525a76b17b724edc37417681f1eb37bb2a1c9bd579f241fbd288b95c1",
     "ci/test_evidence_gates.sh": "c7f4fd452d823e42fb6cf315f8e63382488afa4c40020ba51b318dcdf5c02195",
     "ci/test_generate_rules.py": "66bb0ed5993d7d04524fde5d4daec39f5c6a911678566468618685bb929bd994",
     "ci/test_migrations.sh": "6fd3e46fce7ace2a14bab3cd7cde2ed3d14e34ac023b98f3c39d6ab7ded60314",

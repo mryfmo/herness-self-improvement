@@ -1,3 +1,9 @@
+---
+owner: mryfmo
+last-verified: 2026-07-19
+freshness: 90d
+---
+
 # Branch protection
 
 ## Rationale
