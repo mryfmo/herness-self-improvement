@@ -59,6 +59,13 @@ ledger_id() {
         "SELECT task_id FROM hx_tasks WHERE idempotency_key='$key';"
 }
 
+ledger_state() {
+    local id
+    id=$(sql_quote "$1")
+    sqlite3 -cmd ".bail on" -cmd ".timeout 5000" "$DB" \
+        "SELECT state FROM hx_tasks WHERE task_id='$id';"
+}
+
 require_ledger_id() {
     local id
     id=$(ledger_id "$1")
@@ -108,9 +115,13 @@ require_route team "$TEAM"
 require_route from "$FROM"
 require_route to "$TO"
 
-# shellcheck source=/dev/null
-source "$AGMSG_SCRIPTS/lib/storage.sh"
-DB=${HX_DB_PATH:-$(agmsg_db_path)}
+if [ -n "${HX_DB_PATH:-}" ]; then
+    DB=$HX_DB_PATH
+else
+    # shellcheck source=/dev/null
+    source "$AGMSG_SCRIPTS/lib/storage.sh"
+    DB=$(agmsg_db_path)
+fi
 COMMAND=$1
 shift
 
@@ -159,8 +170,15 @@ case "$COMMAND" in
         internal_id=$(require_ledger_id "$external_id")
         case "$decision" in
             accepted)
-                "$TASK" "$DB" "done" "$internal_id" \
-                    "acceptance status=accepted reason=$reason" >/dev/null
+                state=$(ledger_state "$internal_id")
+                case "$state" in
+                    running)
+                        "$TASK" "$DB" "done" "$internal_id" \
+                            "acceptance status=accepted reason=$reason" >/dev/null
+                        ;;
+                    done) ;;
+                    *) die "$external_id cannot be accepted from state $state" ;;
+                esac
                 ;;
             revise)
                 "$TASK" "$DB" progress "$internal_id" \
@@ -180,7 +198,12 @@ case "$COMMAND" in
         require_route task-id "$external_id"
         require_nonempty reason "$reason"
         internal_id=$(require_ledger_id "$external_id")
-        "$TASK" "$DB" block "$internal_id" "$reason" >/dev/null
+        state=$(ledger_state "$internal_id")
+        case "$state" in
+            running) "$TASK" "$DB" block "$internal_id" "$reason" >/dev/null ;;
+            blocked) ;;
+            *) die "$external_id cannot be blocked from state $state" ;;
+        esac
         send_message "AGMSG-RESULT v1 task_id=$external_id status=blocked reason=$reason"
         printf '%s\n' "$internal_id"
         ;;

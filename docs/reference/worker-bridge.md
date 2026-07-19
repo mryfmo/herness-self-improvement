@@ -41,6 +41,8 @@ The command prints the internal `hx_tasks.task_id`. Assignment first calls
 write succeeds does it deliver `AGMSG-TASK` with the existing AGMSG
 `send.sh`. Repeating the command reuses the ledger row; AGMSG delivery is
 at-least-once so an orchestrator can retry after an uncertain delivery.
+Accepted and blocked terminal transitions also permit a delivery retry
+without repeating the ledger transition.
 
 Record the worker result, request a revision, accept it, or record a blocking
 error:

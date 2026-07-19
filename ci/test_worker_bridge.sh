@@ -78,6 +78,11 @@ INSERT INTO messages(team, from_agent, to_agent, body)
 VALUES ('$(quote "$1")', '$(quote "$2")', '$(quote "$3")', '$(quote "$4")');"
 EOF
 chmod +x "$TMP/bin/send.sh"
+cat >"$TMP/bin/fail-send.sh" <<'EOF'
+#!/usr/bin/env sh
+exit 42
+EOF
+chmod +x "$TMP/bin/fail-send.sh"
 
 expect_failure env HOME="$HOME_DIR" HX_DB_PATH="$LEDGER_DB" \
     "$WORKER" --dry-run "$BAD_REPO"
@@ -153,6 +158,11 @@ assert_eq "$(query "SELECT state FROM hx_tasks WHERE task_id='$ledger_id';")" ru
 assert_contains "$(sqlite3 "$AGMSG_DB" "SELECT body FROM messages ORDER BY id DESC LIMIT 1;")" \
     "AGMSG-ACCEPTANCE v1 task_id=a023 status=revise"
 
+before=$(message_count)
+expect_failure env HX_AGMSG_SEND="$TMP/bin/fail-send.sh" \
+    "$ADAPTER" accept a023 accepted "all checks passed"
+assert_eq "$(query "SELECT state FROM hx_tasks WHERE task_id='$ledger_id';")" "done"
+assert_eq "$(message_count)" "$before"
 "$ADAPTER" accept a023 accepted "all checks passed" >/dev/null
 assert_eq "$(query "SELECT state FROM hx_tasks WHERE task_id='$ledger_id';")" "done"
 assert_eq "$(query "SELECT count(*) FROM hx_task_messages WHERE task_id='$ledger_id' AND kind='task.result';")" 1
