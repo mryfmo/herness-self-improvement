@@ -56,9 +56,28 @@ AGMSG_DB="$AGMSG_DIR/messages.db"
 HOME_DIR="$TMP/home"
 GOOD_REPO="$TMP/good-repo"
 BAD_REPO="$TMP/bad-repo"
-mkdir -p "$HOME_DIR" "$GOOD_REPO" "$BAD_REPO" "$TMP/bin"
+mkdir -p "$AGMSG_DIR" "$HOME_DIR" "$GOOD_REPO" "$BAD_REPO" "$TMP/bin"
 printf '# Test instructions\n' >"$GOOD_REPO/AGENTS.md"
 "$ROOT/db/migrate.sh" up "$LEDGER_DB"
+sqlite3 "$AGMSG_DB" "
+CREATE TABLE messages (
+    id INTEGER PRIMARY KEY,
+    team TEXT NOT NULL,
+    from_agent TEXT NOT NULL,
+    to_agent TEXT NOT NULL,
+    body TEXT NOT NULL
+);"
+cat >"$TMP/bin/send.sh" <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+quote() {
+    printf '%s' "$1" | sed "s/'/''/g"
+}
+sqlite3 "$AGMSG_STORAGE_PATH/messages.db" "
+INSERT INTO messages(team, from_agent, to_agent, body)
+VALUES ('$(quote "$1")', '$(quote "$2")', '$(quote "$3")', '$(quote "$4")');"
+EOF
+chmod +x "$TMP/bin/send.sh"
 
 expect_failure env HOME="$HOME_DIR" HX_DB_PATH="$LEDGER_DB" \
     "$WORKER" --dry-run "$BAD_REPO"
@@ -86,6 +105,7 @@ export AGMSG_STORAGE_PATH="$AGMSG_DIR"
 export HX_AGMSG_TEAM="bridge-test"
 export HX_AGMSG_FROM="orchestrator"
 export HX_AGMSG_TO="worker"
+export HX_AGMSG_SEND="$TMP/bin/send.sh"
 
 ledger_id=$("$ADAPTER" assign a023 P1-F2-T4 \
     a023/f2-t4-worker-bridge "bridge tests pass" \

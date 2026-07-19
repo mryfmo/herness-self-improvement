@@ -8,13 +8,14 @@
 # @option --team <name> AGMSG team; defaults to HX_AGMSG_TEAM.
 # @option --from <agent> Sending agent; defaults to HX_AGMSG_FROM.
 # @option --to <agent> Receiving agent; defaults to HX_AGMSG_TO.
+# @env HX_AGMSG_SEND Test-only path to an AGMSG send.sh-compatible mock.
 # @arg $1 command One of assign, result, accept, or error.
 
 set -euo pipefail
 
 ROOT=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)
 AGMSG_SCRIPTS="$HOME/.agents/skills/agmsg/scripts"
-SEND="$AGMSG_SCRIPTS/send.sh"
+SEND=${HX_AGMSG_SEND:-"$AGMSG_SCRIPTS/send.sh"}
 TASK="$ROOT/db/hx-task.sh"
 
 usage() {

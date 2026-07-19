@@ -25,7 +25,8 @@ export HX_AGMSG_TO=worker-agent
 
 The adapter uses the AGMSG `messages.db` as the default ledger location.
 `HX_DB_PATH` selects another migrated database, which is useful for isolated
-validation.
+validation. Tests may also set `HX_AGMSG_SEND` to a `send.sh`-compatible mock;
+production leaves it unset so the installed AGMSG script is always used.
 
 Assign a task:
 

@@ -19,7 +19,7 @@
     "ci/test_sqlite_load.sh": "4f6de0c00bc18c9ee7eccffe1cd60dc8c5ea8136f76332e466ec83fbf2549193",
     "ci/test_task_ledger.sh": "c0eb010d50536dad6bfac0414ed41142812a851495058b8a85a1c5bec4d58c66",
     "ci/test_telemetry_hooks.sh": "38a7fe9c78f53c4de4656ab6edd201060403c778fb470288b9d1d9fbd049f902",
-    "ci/test_worker_bridge.sh": "55134670afddc91f7d9216aebe434764c2ba95ccd87203654c0232c49fb35517",
+    "ci/test_worker_bridge.sh": "5061b08de466267fd4625fd548aecc11e55b728748dad4716ccf61ac6eae36f3",
     "db/hx-evidence.sh": "ca2c8ae5e24eb04893eb6bf8154e649c6ae22a78a42d8b7522b203f5b4e79dbc",
     "db/hx-task.sh": "647a62c6c78165b8adf26b804a2d82f59c9ccd03dbfe8aaa5409288dfbe7bb0a",
     "db/load-test.sh": "c65f066116f6dbced4df2b61884ae5359796ac268944f78cd7c6562443ca4048",
