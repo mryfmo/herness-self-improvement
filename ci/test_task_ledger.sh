@@ -5,12 +5,11 @@
 
 set -eu
 
-ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+ROOT=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)
 MIGRATE="$ROOT/db/migrate.sh"
 CLI="$ROOT/db/hx-task.sh"
 DOC="$ROOT/docs/reference/telemetry-schema.md"
 DB=$(mktemp "${TMPDIR:-/tmp}/hx-task-ledger.XXXXXX")
-APPLIED_STATUS=$(printf '%s\n' "0001_telemetry applied" "0002_ledger applied")
 trap 'rm -f "$DB" "$DB-wal" "$DB-shm"' EXIT
 
 fail() {
@@ -43,13 +42,23 @@ create_task() {
     "$CLI" "$DB" create "$1" P1-F1-T4 "f1-t4/$1" "complete $1" "${2:-2}"
 }
 
+expected_status() {
+    for migration in "$ROOT"/db/migrations/*.up.sql; do
+        version=${migration##*/}
+        printf '%s applied\n' "${version%.up.sql}"
+    done
+}
+
+APPLIED_STATUS=$(expected_status)
+MIGRATION_COUNT=$(printf '%s\n' "$APPLIED_STATUS" | wc -l | tr -d ' ')
+
 [ -x "$MIGRATE" ] || fail "missing executable db/migrate.sh"
 [ -x "$CLI" ] || fail "missing executable db/hx-task.sh"
 [ -f "$DOC" ] || fail "missing schema documentation"
 
 "$MIGRATE" up "$DB"
 "$MIGRATE" up "$DB"
-[ "$(query "SELECT count(*) FROM hx_schema_migrations;")" = 2 ] || fail "migration ledger"
+[ "$(query "SELECT count(*) FROM hx_schema_migrations;")" = "$MIGRATION_COUNT" ] || fail "migration ledger"
 [ "$("$MIGRATE" status "$DB")" = "$APPLIED_STATUS" ] || fail "migration status"
 for object in hx_tasks hx_task_messages hx_tasks_state_updated_idx hx_task_messages_task_ts_idx hx_tasks_state_transition; do
     [ "$(query "SELECT count(*) FROM sqlite_master WHERE name='$object';")" = 1 ] || fail "missing $object"
@@ -137,6 +146,6 @@ echo "PASS: required payload validation"
 "$MIGRATE" down "$DB"
 [ "$(query "SELECT count(*) FROM sqlite_master WHERE name IN ('hx_tasks', 'hx_task_messages', 'hx_tasks_state_transition');")" = 0 ] || fail "ledger down"
 "$MIGRATE" up "$DB"
-[ "$(query "SELECT count(*) FROM hx_schema_migrations;")" = 2 ] || fail "ledger final up"
+[ "$(query "SELECT count(*) FROM hx_schema_migrations;")" = "$MIGRATION_COUNT" ] || fail "ledger final up"
 [ "$("$MIGRATE" status "$DB")" = "$APPLIED_STATUS" ] || fail "ledger final status"
 echo "PASS: ledger up/up/down/down/up"
