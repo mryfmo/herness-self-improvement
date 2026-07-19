@@ -1,13 +1,20 @@
-# WORKPLAN-HARNESS-SELF-IMPROVEMENT v1.1
+---
+owner: mryfmo
+last-verified: 2026-07-19
+freshness: 90d
+---
+
+# WORKPLAN-HARNESS-SELF-IMPROVEMENT v1.2
 # Harness Engineering 自己改善システム — 作業計画書
 
 ## Status
 
-- Superseded by WORKPLAN-HARNESS-SELF-IMPROVEMENT-v1.2.md
-- 状態: 決裁反映済み・F1 着手可
+- 状態: F1 実施済み（T0〜T8 完了、T9 受入待ち）・改訂フェーズ完了
 - 作成日: 2026-07-18
+- 改訂日: 2026-07-19
+- 改訂元: [WORKPLAN v1.1](WORKPLAN-HARNESS-SELF-IMPROVEMENT-v1.1.md)
 - 実行体制: Claude Code（orchestrator, Fable-5 effort=high）+ Codex（worker, gpt-5.6-sol effort=high）+ agmsg。Claude Code（本セッション系列）が、AGMSG-TASK / AGMSG-RESULT / AGMSG-ACCEPTANCE により Codex の herdr pane 常駐ワーカーを運用する。プロトコル詳細は SPEC 5.3 を参照。
-- 前提文書: docs/specs/SPEC-HARNESS-SELF-IMPROVEMENT-v1.0.md（要件・構造）/ docs/decisions/ADR-HARNESS-SELF-IMPROVEMENT-v1.0.md（決定）
+- 前提文書: [SPEC v1.1](../specs/SPEC-HARNESS-SELF-IMPROVEMENT-v1.1.md)（要件・構造）/ [三軸規律](../specs/discipline-v1.0.md)（自己記述）/ [ADR-0001〜0008 索引](../decisions/README.md)（決定）
 - 表記: タスクは `P1-F<フェーズ>-T<タスク>`。未決の人間判断は残存決裁事項として明記する。各タスクに `Owner: orchestrator | worker` を必須付与。
 
 ### Decision Log
@@ -19,33 +26,63 @@
 | 3 | 2026-07-18 | mryfmo | mryfmo が部門管理者・プロジェクトオーナー・教訓判定者の全承認ロールを単独で兼任する。 |
 | 4 | 2026-07-18 | mryfmo | ADR-0001〜0006 を新規採番し、H001〜H006 を旧呼称として併記する。 |
 | 5 | 2026-07-18 | mryfmo | 本ディレクトリを `git init` して本体化し、4 文書は F1 で `docs/` へ移設する。 |
+| 6 | 2026-07-19 | mryfmo | Harness × Grounded Graph × Gated RSI の三軸を統合し、[ADR-0007](../decisions/ADR-0007-loop-graph-anchoring.md) / [ADR-0008](../decisions/ADR-0008-recursive-self-improvement-strata.md) を Accepted として[三軸規律](../specs/discipline-v1.0.md)に編入する。 |
 
 ## Goal
 
-SPEC の FR-01〜FR-13 / NFR-01〜NFR-08 を満たす自己改善ハーネス基盤を構築し、収集 → 検出 → 生成/改善 → 検証 → 提案 → 統制 → 配布 → 計測の自己改善サイクルが本番運用で 1 周以上完走する状態に到達する。
+SPEC v1.1 の FR-01〜FR-16 / NFR-01〜NFR-08 を満たす自己改善ハーネス基盤を構築し、収集 → 検出 → 生成/改善 → 検証 → 提案 → 統制 → 配布 → 計測の自己改善サイクルが本番運用で 1 周以上完走する状態に到達する。
 
 ## Scope
 
-SPEC 2 章に準拠。本計画は基盤構築と自己改善ループの稼働までを扱い、各プロジェクト固有スキルの量産は運用移行後の日常運用に委ねる。
+SPEC v1.1 の 2 章に準拠。本計画は基盤構築と自己改善ループの稼働までを扱い、各プロジェクト固有スキルの量産は運用移行後の日常運用に委ねる。
 
 ## Assumptions
 
-SPEC 3 章（A-1〜A-6）に準拠し、A-7 は以下の確定値で置き換える。追加:
-- 対象リポジトリは GitHub private `mryfmo/herness-self-improvement`。main 保護 + PR 必須 + CI 必須を設定する。
+SPEC v1.1 の 3 章（A-1〜A-7）に準拠する。追加:
+- 対象リポジトリは GitHub private `mryfmo/herness-self-improvement`。server-side protection が利用できない間は、feature branch + PR + CI、pre-push hook、hash-freeze による代償統制を使う。恒久形態は決裁 D1 待ち。
 - 単独運用とし、承認ロールはすべて mryfmo が兼任する。将来の複数人化は CODEOWNERS 導入で対応する。
-- NFR-01 の人間承認とは、自動生成 PR を mryfmo がレビュー・マージする行為を指す。単独運用でも自己改変は自動マージせず fail-closed を維持する。
+- NFR-01 の人間承認は mryfmo の判断を指す。F9 受入前は建設期例外案（決裁 D2 待ち）を暫定適用し、F9-T7 で PR 単位承認へ切り替える。
 - 昇格閾値（利用回数 N・成功率 M%）とタイムアウト値の初期値: 本計画の既定値で開始し F9 で見直し
 
 ## Design
 
-SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照（本計画には再掲しない）。
+SPEC v1.1 の 5〜6 章、[三軸規律](../specs/discipline-v1.0.md)、[ADR-0001〜0008](../decisions/README.md)を参照（本計画には再掲しない）。
 
 ## Current State
 
-- ハーネスリポジトリ: 未作成
-- agmsg: 稼働中（メッセージング機能のみ。テレメトリ/台帳スキーマ未拡張）
-- AIDD 由来ガバナンス部品（closed gates / data guards / evidence store）: 型付きコードとして存在、本リポジトリへの組込みは未実施
-- 既存 SKILLS 資産: 各プロジェクトに散在（ADR 作成スキル等）。棚卸し未実施
+- ハーネスリポジトリ: GitHub private `mryfmo/herness-self-improvement` として稼働。変更は feature branch + PR + CI で反映し、PR #1〜#15 がマージ済み。
+- agmsg / 台帳: AGMSG v1 による授受が稼働。`hx_tasks` / `messages` のスキーマと状態機械は実装済みだが、両者を唯一経路として接続するアダプタは F2-T4 で実装する。
+- 体験ログ / 負荷試験: telemetry スキーマ、migration、SQLite WAL + busy_timeout、並行 8 writer の 10 分負荷試験を実装・実測済み。イベント欠損 0、デッドロック 0、p95 < 100ms を確認し、DB 同居を暫定採用中。
+- evidence / gates: append-only evidence、secret scan、SHA-256 change-visibility gate、docs の link/frontmatter CI が稼働。hash-freeze は変更権限を強制せず、差分を可視化する。
+- 文書: ADR-0001〜0008 は Accepted。[三軸規律](../specs/discipline-v1.0.md)、SPEC v1.1、LLM Wiki 系譜、負荷試験・スキーマ・gate の参照文書を登録済み。
+- F1: P1-F1-T0〜T8 は完了。P1-F1-T9 の横断受入は未実施。
+- 既存 SKILLS 資産: 各プロジェクトに散在（ADR 作成スキル等）。棚卸しは F5-T2 で実施する。
+
+### 完了タスクの証跡
+
+| タスク ID | PR | Acceptance |
+|---|---|---|
+| P1-F1-T0 | [#1](https://github.com/mryfmo/herness-self-improvement/pull/1) | `.orchestration/acceptance/a002-acceptance.md` |
+| P1-F1-T1 | [#2](https://github.com/mryfmo/herness-self-improvement/pull/2) | `.orchestration/acceptance/a003-acceptance.md` |
+| P1-F1-T2 | [#3](https://github.com/mryfmo/herness-self-improvement/pull/3) | `.orchestration/acceptance/a004-acceptance.md` |
+| P1-F1-T3 | [#4](https://github.com/mryfmo/herness-self-improvement/pull/4) | `.orchestration/acceptance/a005-acceptance.md` |
+| P1-F1-T4 | [#5](https://github.com/mryfmo/herness-self-improvement/pull/5) | `.orchestration/acceptance/a006-acceptance.md` |
+| P1-F1-T5 | [#6](https://github.com/mryfmo/herness-self-improvement/pull/6) | `.orchestration/acceptance/a007-acceptance.md` |
+| P1-F1-T6 | [#7](https://github.com/mryfmo/herness-self-improvement/pull/7) | `.orchestration/acceptance/a008-acceptance.md` |
+| P1-F1-T7 | [#8](https://github.com/mryfmo/herness-self-improvement/pull/8) | `.orchestration/acceptance/a009-acceptance.md` |
+| P1-F1-T8 | [#9](https://github.com/mryfmo/herness-self-improvement/pull/9) | `.orchestration/acceptance/a010-acceptance.md` |
+
+### 追加実績（v1.1 計画外）
+
+| agmsg task | 実績 | PR | Acceptance |
+|---|---|---|---|
+| a011 | LLM Wiki の系譜文書を登録 | [#10](https://github.com/mryfmo/herness-self-improvement/pull/10) | `.orchestration/acceptance/a011-acceptance.md` |
+| a012 | ADR-0007 を登録 | [#11](https://github.com/mryfmo/herness-self-improvement/pull/11) | `.orchestration/acceptance/a012-acceptance.md` |
+| a013 | ADR-0008 を登録 | [#12](https://github.com/mryfmo/herness-self-improvement/pull/12) | `.orchestration/acceptance/a013-acceptance.md` |
+| a014 | 三軸規律による独立監査を実施（リポジトリ変更なし） | — | `.orchestration/acceptance/a014-acceptance.md` |
+| a015 | 三軸規律を登録し ADR-0007/0008 を Accepted に更新 | [#13](https://github.com/mryfmo/herness-self-improvement/pull/13) | `.orchestration/acceptance/a015-acceptance.md` |
+| a016 | migration status、凍結範囲、hash-freeze の説明を修正 | [#14](https://github.com/mryfmo/herness-self-improvement/pull/14) | `.orchestration/acceptance/a016-acceptance.md` |
+| a017 | SPEC v1.1 を登録 | [#15](https://github.com/mryfmo/herness-self-improvement/pull/15) | `.orchestration/acceptance/a017-acceptance.md` |
 
 ## 依存関係・クリティカルパス
 
@@ -104,7 +141,7 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: 実測レポートを docs/reference/sqlite-load-test.md として記録。基準未達なら設定調整して再測、それでも未達は Open Question 化。
 
 **P1-F1-T6 evidence store / closed gates / data guards 組込み** — Owner: worker
-- 作業: AIDD 由来の 3 部品を本リポジトリの ci/ と Hooks から呼べる形で組込み（AIDD 側の SHA-256 ハッシュ凍結機構を含む）。
+- 作業: AIDD 由来の 3 部品を再利用できるという前提はリポジトリ調査で成立しなかったため、同等機能を独立した最小実装として本リポジトリの ci/ と Hooks から呼べる形で組み込む。SHA-256 は変更権限の強制ではなく変更可視化に用いる。
 - 検証: サンプルイベントが evidence store に append-only 記録される。改竄検知テスト合格。
 - 完了: 3 部品の呼出し口が文書化されマージ。
 
@@ -125,7 +162,7 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 
 **F1 Tests**: リポジトリ CI green / スキーマ・台帳の全ユニットテスト合格 / 負荷試験基準達成 / 生成器・検査系の fail ケース実証。
 **F1 Done Criteria**: FR-01・FR-13・NFR-03・NFR-06 の土台が稼働。ADR 6 件 Accepted。リポジトリ設定・承認者・ADR 採番の決裁が反映済み。
-**F1 Open Questions**: agmsg DB の同居 or 分離 DB（負荷試験結果で判断、TBD(HUMAN)）/ marketplace リポジトリの分離時期。
+**F1 Open Questions**: agmsg DB は負荷試験結果に基づき同居を暫定採用。最終承認は決裁 D3 / marketplace リポジトリの分離時期。
 
 ---
 
@@ -147,14 +184,14 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: 分類規則が docs/reference/telemetry-schema.md に追記されマージ。
 
 **P1-F2-T4 Codex 側テレメトリ（起動ラッパー）** — Owner: worker
-- 作業: Codex 起動ラッパーに (a) AGENTS.md 検証、(b) サンドボックス設定、(c) kill switch 確認、(d) 実行ログの台帳・体験ログへの反映を実装（F-BRIDGE）。
-- 検証: ラッパー経由起動で 4 機能が動作。kill switch ON 時に起動拒否。
-- 完了: ラッパーが worker 実行の唯一経路として文書化されマージ。
+- 作業: Codex 起動ラッパーに (a) AGENTS.md 検証、(b) サンドボックス設定、(c) kill switch 確認、(d) 実行ログの台帳・体験ログへの反映、(e) AGMSG-TASK / RESULT / ACCEPTANCE ⇔ `hx_tasks` 台帳のアダプタを実装する。アダプタは SPEC v1.1 5.3 の写像表に従い、以後の授受は台帳を唯一経路とする（F-BRIDGE、A014-16）。
+- 検証: ラッパー経由起動で 5 機能が動作。kill switch ON 時に起動拒否。AGMSG v1 の割当・結果・受入が `create` / `progress` / `done|failed` に一意に写像され、台帳を通らない授受を拒否する。
+- 完了: ラッパーが worker 実行と AGMSG v1 授受の唯一経路として文書化され、写像の結合テスト付きでマージ。
 
 **P1-F2-T5 メトリクス定義と日次集計ジョブ** — Owner: worker
-- 作業: スキル別成功率・訂正率・所要時間、失敗集中箇所、繰り返しプロンプト頻度の集計ビューと日次ジョブを実装。
-- 検証: 合成データで集計値が手計算と一致。
-- 完了: docs/reference/metrics.md に指標定義が確定しマージ。
+- 作業: スキル別成功率・訂正率・所要時間、失敗集中箇所、繰り返しプロンプト頻度の集計ビューと日次ジョブを実装する。全指標を「駆動指標 + 対抗指標」のペアで定義し、各指標に接地 / 派生の分類、owner（mryfmo）、改訂周期を付与する（FR-14、A014-05）。
+- 検証: 合成データで集計値が手計算と一致。全指標についてペア、分類、owner、改訂周期の欠落を schema 検査が拒否する。
+- 完了: docs/reference/metrics.md に指標ペアと管理属性を含む定義が確定し、日次集計・schema 検査とともにマージ。
 
 **P1-F2-T6 監査記録の配線（FR-12 前半）** — Owner: worker
 - 作業: F2 で発生する全自動イベントを evidence store へ二重記録。
@@ -193,9 +230,9 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: kill switch 配下でジョブが登録されマージ。
 
 **P1-F3-T4 lessons → reference/specs 昇格提案** — Owner: worker
-- 作業: 同一テーマの教訓が閾値（既定 3 件）を超えた場合に恒久ページへの昇格ドラフトを curator が作成するロジックを追加。
-- 検証: 合成教訓データで昇格提案 PR が生成される。
-- 完了: 昇格規則が docs/reference/curation-rules.md に記載されマージ。
+- 作業: 同一テーマの教訓が閾値（既定 3 件）を超えた場合に恒久ページへの昇格ドラフトを curator が作成するロジックを追加する。Curator の追記と GC の削除などループ間の衝突は conflict record を残し、orchestrator の調停提案 → mryfmo 決裁で解決する。当事者ループ内では解決しない（A014-09）。
+- 検証: 合成教訓データで昇格提案 PR が生成される。衝突ケースでは自動解決せず、conflict record と調停提案が生成される。
+- 完了: 昇格規則と調停経路が docs/reference/curation-rules.md に記載されマージ。
 
 **P1-F3-T5 鮮度 GC（TTL 切れ検出・再検証タスク起票）** — Owner: worker
 - 作業: frontmatter freshness を走査し、期限切れページの再検証タスクを台帳へ起票する harness-gc の第 1 機能を実装。
@@ -203,9 +240,9 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: 夜間ジョブに組込みマージ。
 
 **P1-F3-T6 還流ループ 2 週間試験運用** — Owner: orchestrator
-- 作業: 実データで還流 PR を運用し、mryfmo 承認でマージ。採択率・修正率を計測。
+- 作業: 実データで還流 PR を運用し、mryfmo 承認でマージ。採択率・修正率を計測する。プロンプトなど L2 の改訂は、メタ指標実測値を PR 本文に記載し、mryfmo 承認、カナリア、1 ループ 1 変更 / 周期に従う。次周期のメタ指標悪化時は P1-F6-T5 の機構でロールバックを提案する（FR-15、A014-06）。
 - 検証: 起票 PR のうち採択（そのまま/軽微修正でマージ）≥ 60%。重大な誤還流（事実誤り）0 件。
-- 完了: 試験運用レポートを docs/lessons/ へ記録。未達時は T1/T2 のプロンプト改訂後に 1 週間再試験。
+- 完了: 試験運用レポートを docs/lessons/ へ記録。未達時の T1/T2 プロンプト改訂は L2 カナリア契約を満たしたうえで 1 週間再試験する。
 
 **P1-F3-T7 CLAUDE.md/AGENTS.md への反映経路** — Owner: worker
 - 作業: 恒久化された規範のうち「常時制約」該当分を rules.src.md へ反映する提案経路（curator → rules PR、常に mryfmo 承認）を実装。
@@ -269,9 +306,9 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: 4 種別が生成 PR フローに接続されマージ。
 
 **P1-F4-T9 生成パイプライン試験運用（2 週間）** — Owner: orchestrator
-- 作業: 実データで運用し、起票品質を計測。
+- 作業: 実データで運用し、起票品質を計測する。スコア規則やドラフタなど L2 の改訂は、メタ指標実測値を PR 本文に記載し、mryfmo 承認、カナリア、1 ループ 1 変更 / 周期に従う。次周期のメタ指標悪化時は P1-F6-T5 の機構でロールバックを提案する（FR-15、A014-06）。
 - 検証: 起票 PR の人間採択率 ≥ 50%（研究報告の生成成功率 ~68.6% を踏まえた初期目標）。誤起票（明らかな重複・無意味）率 < 20%。
-- 完了: レポート記録。未達時はスコアリング/ドラフタ改訂後 1 週間再試験。
+- 完了: レポート記録。未達時のスコアリング / ドラフタ改訂は L2 カナリア契約を満たしたうえで 1 週間再試験する。
 
 **P1-F4-T10 Phase F4 受入** — Owner: orchestrator
 - 作業/検証/完了: 横断レビュー・Tests 全合格・mryfmo 承認・evidence 記録。
@@ -336,9 +373,9 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: kill switch 配下で登録されマージ。
 
 **P1-F6-T2 スキル向け reflector/curator 拡張** — Owner: worker
-- 作業: F3 の還流器を SKILL.md 対象に拡張（失敗ログ・訂正・逸脱から改善デルタを構成）。デルタ種別は F3 と同一の 4 種。
-- 検証: 劣化スキルのサンプルで改善デルタが生成され、eval 合格まで到達。
-- 完了: マージ。
+- 作業: F3 の還流器を SKILL.md 対象に拡張（失敗ログ・訂正・逸脱から改善デルタを構成）。デルタ種別は F3 と同一の 4 種。プロンプトなど L2 の改訂は、メタ指標実測値を PR 本文に記載し、mryfmo 承認、カナリア、1 ループ 1 変更 / 周期に従う。次周期のメタ指標悪化時は P1-F6-T5 の機構でロールバックを提案する（FR-15、A014-06）。
+- 検証: 劣化スキルのサンプルで改善デルタが生成され、eval 合格まで到達。L2 改訂では契約属性の欠落と同一周期の 2 件目を拒否する。
+- 完了: L2 カナリア契約とともにマージ。
 
 **P1-F6-T3 回帰評価ゲート統合** — Owner: worker
 - 作業: 最適化 PR に対し「当該スキル eval 全件 + 隣接スキル（同 Workflow 内・依存関係）のスモーク」を必須実行する CI 統合。
@@ -346,14 +383,14 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: 必須 CI 登録マージ。
 
 **P1-F6-T4 重複排除・矛盾検出（層内/層間）** — Owner: worker
-- 作業: 索引を用いた類似スキル検出（層内・3 層間）と Wiki との矛盾検出を harness-gc に実装。統合提案 PR を生成。
-- 検証: 既知の重複ペア/矛盾サンプルで検出・提案が生成される。
-- 完了: マージ。
+- 作業: 索引を用いた類似スキル検出（層内・3 層間）と Wiki との矛盾検出を harness-gc に実装し、統合提案 PR を生成する。ループ間の衝突は conflict record を残し、orchestrator の調停提案 → mryfmo 決裁で解決する。当事者ループ内では解決しない（A014-09）。
+- 検証: 既知の重複ペア / 矛盾サンプルで検出・提案が生成される。衝突ケースは自動統合せず調停待ちになる。
+- 完了: conflict record と上位調停経路を含めてマージ。
 
 **P1-F6-T5 陳腐化削除と自動ロールバック提案** — Owner: worker
-- 作業: 長期未使用（既定 90 日）・成功率劣化スキルの廃止提案、および直近マージ後に指標悪化した変更のロールバック PR 提案を実装。
-- 検証: 合成時系列で廃止/ロールバック提案が正しく発火。
-- 完了: マージ。
+- 作業: 長期未使用（既定 90 日）・成功率劣化スキルの廃止提案、および直近マージ後に指標悪化した変更のロールバック PR 提案を実装する。L2 カナリアの次周期メタ指標悪化をロールバック提案の入力に含める（FR-15、A014-06）。
+- 検証: 合成時系列で廃止 / ロールバック提案が正しく発火。L2 カナリア悪化時は提案し、非悪化時は提案しない。
+- 完了: L1 と L2 のロールバック提案経路を分けて記録できる状態でマージ。
 
 **P1-F6-T6 A/B 評価（改変前後の実測）** — Owner: worker
 - 作業: 最適化 PR マージ前に旧新 2 版を eval + サロゲートで比較し、改善幅を PR 本文へ自動記載する機構を実装（ACE 報告値の自社再現性を常時実測する仕組み）。
@@ -366,9 +403,9 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: レポート記録（改善幅の実測値を REPORT の残存リスク (b) への回答として記載）。
 
 **P1-F6-T8 diff 比率ガード恒久化** — Owner: worker
-- 作業: 一括リライト検出（>40% で mryfmo 承認へ格上げ）の対象を SKILLS 全域へ拡大し、閾値を設定ファイル化。
-- 検証: 閾値変更が設定のみで反映される。
-- 完了: マージ。
+- 作業: 一括リライト検出（>40% で mryfmo 承認へ格上げ）の対象を SKILLS 全域へ拡大し、閾値を L3 所有の設定ファイルへ移す。
+- 検証: 閾値変更が設定のみで反映される。設定変更 PR は人間専有であり、自動提案できないことを検証する（A014-10）。
+- 完了: L3 所有設定と変更主体の gate を含めてマージ。
 
 **P1-F6-T9 Phase F6 受入** — Owner: orchestrator
 - 作業/検証/完了: 横断レビュー・Tests 全合格・mryfmo 承認・evidence 記録。
@@ -397,14 +434,14 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: 夜間ジョブ登録マージ。
 
 **P1-F7-T4 汎化ドラフトと昇格 PR** — Owner: worker
-- 作業: curator が個人/プロジェクト固有要素（パス・固有名詞）を汎化した上位スコープ向けドラフトを作成し、昇格 PR（scan + eval + mryfmo 承認必須）を起票。
-- 検証: サンプルスキルの昇格 E2E 完走。固有情報の残存 0 件（scan で検査）。
-- 完了: マージ。
+- 作業: curator が個人 / プロジェクト固有要素（パス・固有名詞）を汎化した上位スコープ向けドラフトを作成し、昇格 PR（scan + eval + mryfmo 承認必須）を起票する。汎化とプロジェクト特化の衝突は conflict record を残し、orchestrator の調停提案 → mryfmo 決裁で解決する。当事者ループ内では解決しない（A014-09）。
+- 検証: サンプルスキルの昇格 E2E 完走。固有情報の残存 0 件（scan で検査）。衝突ケースは自動昇格せず調停待ちになる。
+- 完了: 上位調停経路を含めてマージ。
 
 **P1-F7-T5 降格・廃止フロー** — Owner: worker
-- 作業: 全社スキルの利用低迷・プロジェクト固有化の検出と降格/廃止提案フローを実装。
-- 検証: 合成データで提案が発火。
-- 完了: マージ。
+- 作業: 全社スキルの利用低迷・プロジェクト固有化の検出と降格 / 廃止提案フローを実装する。昇格・特化・降格ループの衝突は conflict record を残し、orchestrator の調停提案 → mryfmo 決裁で解決する。当事者ループ内では解決しない（A014-09）。
+- 検証: 合成データで提案が発火。衝突ケースでは自動降格・廃止を行わず調停待ちになる。
+- 完了: 上位調停経路を含めてマージ。
 
 **P1-F7-T6 個人スコープの scan 必須化** — Owner: worker
 - 作業: ~/.claude/ 配下スキルにも取込時 scan を課すローカルフック/CLI を配布（FR-09 の個人層適用）。
@@ -433,9 +470,9 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: 必須 Hooks として登録マージ（mryfmo 承認）。
 
 **P1-F8-T2 自己改変防護（NFR-01）** — Owner: worker
-- 作業: 自己改善パイプラインのコード・CI 定義・Hooks 設定に対する変更 PR を自動検出し、自動マージ不可 + mryfmo 承認必須ラベルを強制。
-- 検証: 該当パス変更 PR が例外なく格上げされる（バイパス試験含む）。
-- 完了: マージ。
+- 作業: SPEC v1.1 NFR-01 の L3 全域（gate、CI 定義、Hooks 設定、kill switch、ADR 群、凍結マニフェスト、再帰階層定義、L3 所有設定ファイル）に対する変更 PR を自動検出し、自動マージ不可 + mryfmo 承認必須ラベルを強制する（A014-10）。
+- 検証: L3 各分類の変更 PR が例外なく格上げされる。パス別バイパスと複合変更でも承認を省略できない。
+- 完了: NFR-01 の L3 全域を保護対象として文書化しマージ。
 
 **P1-F8-T3 kill switch 完成** — Owner: worker
 - 作業: `ctrl.kill` / DB フラグによる全ジョブ即時停止、SessionStart での停止状態表示、再開手順を実装（FR-11）。
@@ -443,7 +480,7 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: 発動・再開 runbook マージ。
 
 **P1-F8-T4 署名・出所記録** — Owner: worker
-- 作業: マージ時 artefact ハッシュ + 由来（ジョブ/セッション ID）の evidence 記録と、実行時のハッシュ照合（改変検知）を実装（F-GOV 3、AIDD の SHA-256 凍結再利用）。
+- 作業: マージ時 artefact ハッシュ + 由来（ジョブ / セッション ID）の evidence 記録と、実行時のハッシュ照合（改変検知）を実装する（F-GOV 3、独立最小実装の SHA-256 change-visibility gate）。
 - 検証: 手改変した artefact の実行が検知・警告される。
 - 完了: マージ。
 
@@ -458,9 +495,9 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: マージ。
 
 **P1-F8-T7 監査レポート自動生成（FR-12 完成）** — Owner: worker
-- 作業: 月次の自動変更・スキャン結果・却下事由・kill switch 発動履歴のレポート生成を実装。
-- 検証: サンプル月データでレポートが完全生成。
-- 完了: マージ。
+- 作業: 月次の自動変更・スキャン結果・却下事由・kill switch 発動履歴のレポート生成を実装する。FR-16 の循環検査として、各最適化決定が接地指標に依拠したかを検証し、派生指標だけの決定を違反として報告する（A014-08）。
+- 検証: サンプル月データでレポートが完全生成。接地ありの決定は合格し、派生指標だけの決定は違反として列挙される。
+- 完了: 循環検査の入力・判定・違反一覧を含む月次レポート schema と生成器がマージ。
 
 **P1-F8-T8 インシデント runbook** — Owner: orchestrator
 - 作業: 悪性スキル検出時・誤マージ時・暴走時の対応手順（kill switch → 隔離 → ロールバック → 事後分析 → lessons 還流）を docs/reference/ に整備。
@@ -475,8 +512,8 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 **P1-F8-T10 Phase F8 受入** — Owner: orchestrator
 - 作業/検証/完了: 横断レビュー・Tests 全合格・mryfmo 承認・evidence 記録。
 
-**F8 Tests**: deny 24 シナリオ / 自己改変格上げ / kill switch 実測 / 改変検知 / レッドチーム / 障害注入 4 種。
-**F8 Done Criteria**: FR-09〜FR-12・NFR-01/02/04 完成。SPEC 6.5 の 7 制御が全稼働。
+**F8 Tests**: deny 24 シナリオ / 自己改変格上げ / kill switch 実測 / 改変検知 / レッドチーム / 循環検査 / 障害注入 4 種。
+**F8 Done Criteria**: FR-09〜FR-12・FR-16・NFR-01/02/04 完成。SPEC 6.5 の 7 制御が全稼働。
 **F8 Open Questions**: レッドチーム試験の定期実施周期 TBD(HUMAN)。
 
 ---
@@ -495,8 +532,8 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 
 **P1-F9-T3 運用ドキュメント一式** — Owner: worker
 - 作業: 管理者ガイド・利用者ガイド・承認者ガイド・runbook 索引を docs/ に整備し、CLAUDE.md/AGENTS.md のマップを最終化。
-- 検証: クリーン環境（新規マシン相当）で mryfmo がドキュメントのみを頼りにセットアップ〜スキル提案まで到達するセルフオンボーディング試験を実施。
-- 完了: マージ。
+- 検証: クリーン環境（新規マシン相当）で mryfmo がドキュメントのみを頼りにセットアップ〜スキル提案まで到達するセルフオンボーディング試験を実施。legacy 文書へ frontmatter を付与し、`ci/docs-frontmatter-exempt.txt` が空であることを CI で確認する（A014-15）。
+- 完了: 運用文書一式がマージされ、`ci/docs-frontmatter-exempt.txt` が空になっている。
 
 **P1-F9-T4 閾値・既定値の本値確定** — Owner: orchestrator
 - 作業: 本計画中の既定値（起票上限 5、diff 40%、昇格 N=10/M=80、タイムアウト 15 分、未使用 90 日ほか）を試験運用実測に基づき提案し、mryfmo の決裁を得る。
@@ -509,14 +546,14 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 - 完了: docs/plans/roadmap-v2.md マージ。
 
 **P1-F9-T6 総合受入判定** — Owner: orchestrator
-- 作業: FR-01〜13 / NFR-01〜08 の充足マトリクスを作成し、mryfmo の最終承認を得る。
+- 作業: FR-01〜16 / NFR-01〜08 の充足マトリクスを作成し、mryfmo の最終承認を得る。
 - 検証: 全項目が証跡付きで判定済み。
 - 完了: 受入判定書を evidence store へ記録（mryfmo 承認）。
 
 **P1-F9-T7 運用移行・引継ぎ** — Owner: orchestrator
-- 作業: 日常運用（mryfmo による承認運用・監査レビュー・レッドチーム周期）の体制を確定し引継ぎ。
+- 作業: 日常運用（mryfmo による承認運用・監査レビュー・レッドチーム周期）の体制を確定し引継ぐ。承認モードを切り替え、建設期例外（orchestrator 検証 + マージ）を終了して mryfmo の PR 単位承認へ移行する（A014-01、決裁 D2）。
 - 検証: 移行後 1 週間、人手介入なしで夜間ジョブ群が正常完走。
-- 完了: 引継ぎ完了を記録し本計画をクローズ。
+- 完了: 承認モード切替と引継ぎ完了を記録し本計画をクローズ。
 
 **F9 Tests**: E2E 全周 / NFR 最終実測 / セルフオンボーディング / 無人 1 週間安定稼働。
 **F9 Done Criteria**: Goal 達成（自己改善サイクルが本番で 1 周以上完走し、運用体制へ移行済み）。
@@ -530,17 +567,20 @@ SPEC 5〜6 章および ADR-0001〜0006（旧呼称 ADR-H001〜H006）を参照�
 
 | # | 項目 | 決裁内容 |
 |---|---|---|
-| 1 | 対象リポジトリ名・ホスティング・保護ブランチ設定 | GitHub private `mryfmo/herness-self-improvement`、main 保護 + PR 必須 + CI 必須。 |
+| 1 | 対象リポジトリ名・ホスティング・保護ブランチ設定 | GitHub private `mryfmo/herness-self-improvement`、main 保護 + PR 必須 + CI 必須を目標とする。server-side protection が利用できない現状は代償統制を適用し、恒久形態を D1 で決裁する。 |
 | 2 | 承認者名簿 | mryfmo が部門管理者・プロジェクトオーナーを単独兼任。 |
 | 3 | ADR 採番 | ADR-0001〜0006 を新規採番し、H001〜H006 を旧呼称として併記。 |
 | 6 | 教訓有用判定の判定者 | mryfmo。 |
 | 9（承認者） | 昇格 PR の上位スコープ承認者 | mryfmo。 |
+| 2026-07-19 | 三軸統合 / ADR-0007・0008 | Harness × Grounded Graph × Gated RSI を統合し、ADR-0007 / ADR-0008 を Accepted として三軸規律へ編入。 |
 
 ### 残存決裁事項
 
 | # | 項目 | 初出 | 決裁期限の目安 | 状態 |
 |---|---|---|---|---|
-| 4 | agmsg DB 同居 or 分離（負荷試験結果次第） | F1 OQ | F1 末 | TBD(HUMAN) |
+| D1 | server-side protection の恒久形態（GitHub Pro 化 / public 化 / 現状受容） | SPEC v1.1 A-4 / A014-02 | F1-T9 | TBD(HUMAN) |
+| D2 | 建設期承認例外の追認と、F9-T7 での mryfmo PR 単位承認への切替 | SPEC v1.1 NFR-01 / A014-01 | F1-T9（追認）/ F9-T7（切替） | TBD(HUMAN) |
+| D3 | agmsg DB 同居の最終承認 | F1 OQ #4 / A014-14 | F1-T9 | TBD(HUMAN)。実測済み・同居推奨・暫定採用中。`docs/reference/telemetry-schema.md` の deployment 記述は P1-F2-T1 実装時に併せて更新する。 |
 | 5 | テレメトリ保持期間・匿名化ポリシー・監査サンプル数 | F2 | F2 末 | TBD(HUMAN) |
 | 7 | 生成 PR 採択率・還流採択率の恒久目標 | F3/F4 OQ | F9-T4 | TBD(HUMAN) |
 | 8 | 失敗率閾値・未使用日数・昇格閾値（N, M%）などの恒久値 | F6/F7 OQ | F9-T4 | TBD(HUMAN) |
