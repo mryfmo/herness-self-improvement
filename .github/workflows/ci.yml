@@ -40,6 +40,8 @@ jobs:
         run: python3 ci/check-docs.py
       - name: Test telemetry migrations
         run: ci/test_migrations.sh
+      - name: Test telemetry hooks
+        run: ci/test_telemetry_hooks.sh
       - name: Test task ledger
         run: ci/test_task_ledger.sh
       - name: Smoke-test SQLite load

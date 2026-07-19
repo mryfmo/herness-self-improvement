@@ -8,11 +8,21 @@ freshness: 90d
 
 ## Scope
 
-The harness experience layer uses an injected SQLite database path. Every extension object uses the `hx_` namespace, so the schema can share the agmsg database or use a separate file without code changes. The deployment choice remains open until P1-F1-T5.
+The harness experience layer uses an injected SQLite database path. Every extension object uses the `hx_` namespace. Based on the P1-F1-T5 load test, v1 provisionally shares the live agmsg database under decision D3; final human approval remains pending. Set `HX_DB_PATH` to use another database for tests or a later deployment change.
 
 Run `db/migrate.sh up|down|status <db-path>`. The wrapper enables WAL and a 5,000 ms busy timeout; up/down connections also enable foreign keys. Applications must enable foreign keys on their own SQLite connections.
 
 Timestamps are ISO 8601 text. Boolean fields are integers constrained to `0` or `1`.
+
+## Session and prompt hooks
+
+Project settings register `.claude/hooks/hx-telemetry.sh` for `SessionStart` and `UserPromptSubmit`. The hook copies its JSON input and starts the SQLite writer in the background, so the calling hook exits without waiting for the insert. Project settings take effect at the next Claude session start; live-session measurement belongs to the P1-F2-T7 dry run.
+
+The default database path comes from the agmsg `agmsg_db_path` storage resolver. `HX_DB_PATH` overrides it. Before applying migrations to the live database, create and hash a SQLite `.backup`.
+
+Prompt content is checked against the same patterns as `ci/secret-scan.py`. Each match is replaced with `[REDACTED:<rule>]`; `hx_prompts.masked` is `1` when at least one replacement occurred.
+
+Insert and input failures do not fail the hook. They append a redacted event line to `~/.agents/hx/telemetry-failures.log`. The next successful insert records `telemetry.failures.recovered` in `hx_audit` with the accumulated failure count, then clears the file.
 
 ## Migration ledger
 
