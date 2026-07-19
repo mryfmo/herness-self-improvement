@@ -29,7 +29,20 @@ db/hx-evidence.sh <db-path> list
 db/hx-evidence.sh <db-path> trace <ref>
 ```
 
-`record` requires non-empty actor, event, and ref values plus valid JSON detail. It returns the inserted row id. `trace` orders matching evidence by row id. The command requires an existing migrated database and refuses paths under the live home `.agents` directory.
+`record` requires non-empty actor, event, and ref values plus valid JSON detail. It returns the inserted row id. `trace` orders matching evidence by row id. The command requires an existing migrated database.
+
+Paths under the live home `.agents` directory are refused by default. An
+operator may allow one intentional invocation by setting
+`HX_EVIDENCE_ALLOW_LIVE=1` on that command:
+
+```sh
+HX_EVIDENCE_ALLOW_LIVE=1 db/hx-evidence.sh \
+  "$HOME/.agents/skills/agmsg/db/messages.db" \
+  record <actor> <event> <ref> <detail-json>
+```
+
+Do not export this variable for a shell session. The live opt-in still rejects
+a missing database or a database without the `hx_audit` table.
 
 Future Hooks can record generated artefact, review, scan, merge, rejection, and rollback events through this command. Secrets must pass the data guard before recording.
 

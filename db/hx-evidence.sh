@@ -2,8 +2,9 @@
 
 # @file db/hx-evidence.sh
 # @brief Record and query append-only evidence in the hx_audit table.
-# @arg $1 db-path Existing migrated SQLite database outside the live .agents directory.
+# @arg $1 db-path Existing migrated SQLite database.
 # @arg $2 command One of record, list, or trace.
+# @env HX_EVIDENCE_ALLOW_LIVE Set to 1 to allow a database under ~/.agents.
 
 set -eu
 
@@ -32,12 +33,15 @@ shift 2
 
 DB_DIR=$(dirname -- "$DB")
 [ -d "$DB_DIR" ] || die "database parent directory does not exist"
-DB_DIR=$(CDPATH= cd -- "$DB_DIR" && pwd -P)
+DB_DIR=$(CDPATH='' cd -- "$DB_DIR" && pwd -P)
 DB="$DB_DIR/$(basename -- "$DB")"
 if [ -d "$HOME/.agents" ]; then
-    AGENTS_DIR=$(CDPATH= cd -- "$HOME/.agents" && pwd -P)
+    AGENTS_DIR=$(CDPATH='' cd -- "$HOME/.agents" && pwd -P)
     case "$DB" in
-        "$AGENTS_DIR"|"$AGENTS_DIR"/*) die "refusing to use a live .agents database path" ;;
+        "$AGENTS_DIR"|"$AGENTS_DIR"/*)
+            [ "${HX_EVIDENCE_ALLOW_LIVE:-}" = 1 ] ||
+                die "refusing to use a live .agents database path"
+            ;;
     esac
 fi
 [ -f "$DB" ] || die "database does not exist"
