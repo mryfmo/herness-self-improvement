@@ -6,7 +6,8 @@ freshness: 180d
 
 # ADR-0008: 再帰的自己改善の階層と限界を定める
 
-- Status: Proposed (mryfmo 決裁待ち)
+- Status: Accepted
+- Accepted: 2026-07-19 mryfmo 指示(ADR-0007/0008 の取り込み・RSI 追加・三軸統合と根本修正の指示)による。
 - Context: [WORKPLAN v1.1](../plans/WORKPLAN-HARNESS-SELF-IMPROVEMENT-v1.1.md) の P1-F3-T6 は、採択目標を下回ったときに Reflector/Curator のプロンプトを改訂する。P1-F6 は optimizer の出力を統計的に再評価する。これらは改善機構を改善する二次ループだが、再帰の階層と限界は未定義である。無制限の再帰的自己改善には、optimizer の誤りを複製して増幅する危険、自己参照的な検証、承認条件を自ら緩める gate erosion がある。関連する根拠は、ローカルの REPORT に収録された Agentic Harness Engineering（arXiv:2604.25850）と self-evolving agent survey（arXiv:2508.07407）、重み更新を不採用とした [ADR-0002](ADR-0002-two-layer-memory.md)、fail-closed を定めた [ADR-0004](ADR-0004-fail-closed-pr-pipeline.md)、接地を求める [ADR-0007](ADR-0007-loop-graph-anchoring.md) である。本提案は、ADR-0007 にこの観点を加えるというユーザー指示（2026-07-19）に基づく。
 - Decision:
   1. **再帰階層 L0〜L3 と変更権限を定める。**

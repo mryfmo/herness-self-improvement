@@ -6,7 +6,8 @@ freshness: 180d
 
 # ADR-0007: 自己改善をループのグラフとして設計し、接地アンカーで循環を防ぐ
 
-- Status: Proposed (mryfmo 決裁待ち)
+- Status: Accepted
+- Accepted: 2026-07-19 mryfmo 指示(ADR-0007/0008 の取り込み・RSI 追加・三軸統合と根本修正の指示)による。
 - Context: 単一の自己改善ループには、(1) Goodhart の法則による指標と目的の乖離、(2) 参照値への上方盲目、(3) 独立に作られたループ間の衝突、(4) 監視者不在による測定自体の劣化、という 4 つの構造的失敗がある。成熟した自己改善は、ペアリング・階層・調停・監査を備えた「ループのグラフ」として扱う必要がある。ただし、グラフだけでは相互確認の循環に陥る。そこで、反論不能な接地測定、凍結ノード、機構の外から与えられる価値判断を「アンカー」として置く。出典はユーザー提供エッセイ（2026-07）であり、[Peter Steinberger のポスト](https://x.com/steipete/status/2078277297791189132) と[関連ポスト](https://x.com/IntuitMachine/status/2068808668393451770)に言及している。古典的系譜には Goodhart の法則、Argyris の double-loop learning、参照値を誰が持つかという制御階層を扱うサイバネティクスがある。
 - Decision:
   1. **指標ペア必須。** 最適化ループの駆動指標を単独で使わない。スキル成功率と訂正率、起票数と誤起票率のように、対抗指標とのペアで定義する。[WORKPLAN v1.1](../plans/WORKPLAN-HARNESS-SELF-IMPROVEMENT-v1.1.md) P1-F2-T5 が作成する `docs/reference/metrics.md` は、すべての指標をペア構造で定義する。
