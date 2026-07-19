@@ -68,3 +68,18 @@ grep -rn 'HARNESS-SELF-IMPROVEMENT-v1' docs/ --include='*.md' -l
 
 `AGMSG-RESULT v1 task_id=a002 status=ready_for_review report=... validation=... sandbox=... learning=... autoskill=...`
 ブロック時(gh 権限不足等)は status=blocked + report に詳細。
+
+---
+
+## 補遺 r1(orchestrator、2026-07-18): ブランチ保護不可への対応
+
+GitHub Free の private リポジトリでは branch protection / rulesets が利用不可(403 実証済み)。
+プラン変更・public 化はユーザー決裁事項のため、本タスクは以下の**修正手順**で完遂する:
+
+- 手順 5(サーバー側保護)は**スキップ**。代わりに代償統制を実装:
+  1. `githooks/pre-push` を作成: push 先 ref が `refs/heads/main` の場合、環境変数 `ALLOW_MAIN_PUSH=1` がない限り exit 1 でブロック(メッセージで PR フローへ誘導)。
+  2. `git config core.hooksPath githooks` を設定し、README にセットアップ手順として 1 行記載。
+  3. `docs/reference/branch-protection.md` を新規作成: 403 の事実、代償統制の内容、サーバー側保護へ移行する際の gh api 手順(validation に記録済みの PUT コマンド)を記載。「サーバー側保護の有効化はユーザー決裁(Pro 化 or public 化)待ち」と明記。
+- 手順 6〜8(docs 移設ブランチ → PR → CI green → squash merge)は予定どおり実施。githooks/README/branch-protection.md も同 PR に含めてよい。
+- 手順 9(直接 push 拒否の実証)は**ローカル hook で実証**: `ALLOW_MAIN_PUSH` なしの `git push origin HEAD:main` が hook で拒否されることを記録。マージ後の main 更新 push は `ALLOW_MAIN_PUSH=1` で行う(PR マージ自体は GitHub 側で完結するため通常不要)。
+- 完了条件の読み替え: 「以後全変更が PR 駆動になる」= PR フロー + ローカル pre-push ガード + CI。サーバー側強制は決裁後に F1-T9 までに再評価。
