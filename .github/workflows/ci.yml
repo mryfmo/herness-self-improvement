@@ -34,6 +34,10 @@ jobs:
         run: |
           python3 ci/generate-rules.py
           git diff --exit-code -- CLAUDE.md AGENTS.md
+      - name: Test docs checker
+        run: python3 ci/test_check_docs.py
+      - name: Check docs
+        run: python3 ci/check-docs.py
       - name: Test telemetry migrations
         run: ci/test_migrations.sh
       - name: Test task ledger

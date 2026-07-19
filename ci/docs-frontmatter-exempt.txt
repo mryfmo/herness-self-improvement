@@ -1,0 +1,6 @@
+# 文書改訂時に frontmatter 付与し本リストから除去
+docs/plans/WORKPLAN-HARNESS-SELF-IMPROVEMENT-v1.0.md
+docs/plans/WORKPLAN-HARNESS-SELF-IMPROVEMENT-v1.1.md
+docs/specs/SPEC-HARNESS-SELF-IMPROVEMENT-v1.0.md
+docs/reference/REPORT-HARNESS-SELF-IMPROVEMENT-v1.0.md
+docs/decisions/ADR-HARNESS-SELF-IMPROVEMENT-v1.0.md
