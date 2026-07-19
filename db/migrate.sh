@@ -2,6 +2,9 @@
 
 # @file db/migrate.sh
 # @brief Apply, revert, or inspect the harness telemetry schema in a selected SQLite database.
+# @description
+#   Status reports every migration found as migrations/*.up.sql and exits nonzero
+#   when at least one migration is pending.
 # @arg $1 action One of up, down, or status.
 # @arg $2 db-path SQLite database path.
 
@@ -61,12 +64,19 @@ case "$ACTION" in
         } | sqlite3 -cmd ".bail on" -cmd ".timeout 5000" -cmd "PRAGMA foreign_keys=ON;" "$DB"
         ;;
     status)
-        applied=$(sqlite3 -cmd ".timeout 5000" "$DB" \
-            "SELECT count(*) FROM hx_schema_migrations WHERE version = '0001_telemetry';")
-        if [ "$applied" = 1 ]; then
-            echo "0001_telemetry applied"
-        else
-            echo "0001_telemetry pending"
-        fi
+        pending=0
+        for migration in "$SCRIPT_DIR"/migrations/*.up.sql; do
+            version=${migration##*/}
+            version=${version%.up.sql}
+            applied=$(sqlite3 -cmd ".timeout 5000" "$DB" \
+                "SELECT count(*) FROM hx_schema_migrations WHERE version = '$version';")
+            if [ "$applied" = 1 ]; then
+                echo "$version applied"
+            else
+                echo "$version pending"
+                pending=1
+            fi
+        done
+        exit "$pending"
         ;;
 esac

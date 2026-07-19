@@ -33,13 +33,15 @@ db/hx-evidence.sh <db-path> trace <ref>
 
 Future Hooks can record generated artefact, review, scan, merge, rejection, and rollback events through this command. Secrets must pass the data guard before recording.
 
-## SHA-256 closed gate
+## SHA-256 change-visibility gate
 
 `ci/frozen-paths.txt` currently freezes:
 
 - `githooks/`
 - `ci/`
 - `db/`
+- `docs/decisions/`
+- `docs/specs/discipline-v1.0.md`
 - `.github/workflows/`
 
 Create or intentionally refresh the deterministic manifest:
@@ -54,7 +56,9 @@ Verify it:
 ci/hash-freeze.py verify
 ```
 
-The manifest is `ci/frozen-manifest.json`. The manifest excludes itself, Python bytecode, and `__pycache__`; configured symlinks are rejected. Any added, removed, or changed frozen file fails verification until `freeze` updates the manifest. The manifest diff makes the explicit review decision visible rather than silently blocking all changes.
+The manifest is `ci/frozen-manifest.json`. The manifest excludes itself, Python bytecode, and `__pycache__`; configured symlinks are rejected. Any added, removed, or changed frozen file fails verification until `freeze` updates the manifest.
+
+This hash freeze does not mechanically enforce who may change a frozen file. It forces every such change to appear in review as an explicit file diff accompanied by a manifest update. Human approval under NFR-01 is the authority boundary. Moving the trust root outside the pull request checkout, through server-side protection or signing, awaits user decision D1.
 
 ## Secret data guard
 

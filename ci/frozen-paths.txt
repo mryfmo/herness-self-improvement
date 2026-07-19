@@ -1,4 +1,6 @@
 githooks/
 ci/
 db/
+docs/decisions/
+docs/specs/discipline-v1.0.md
 .github/workflows/

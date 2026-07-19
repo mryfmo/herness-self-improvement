@@ -10,6 +10,8 @@ MIGRATE="$ROOT/db/migrate.sh"
 UP="$ROOT/db/migrations/0001_telemetry.up.sql"
 DOC="$ROOT/docs/reference/telemetry-schema.md"
 DB=$(mktemp "${TMPDIR:-/tmp}/hx-telemetry.XXXXXX")
+APPLIED_STATUS=$(printf '%s\n' "0001_telemetry applied" "0002_ledger applied")
+PENDING_STATUS=$(printf '%s\n' "0001_telemetry pending" "0002_ledger pending")
 trap 'rm -f "$DB" "$DB-wal" "$DB-shm"' EXIT
 
 fail() {
@@ -35,7 +37,20 @@ assert_object() {
 
 "$MIGRATE" up "$DB"
 "$MIGRATE" up "$DB"
-[ "$("$MIGRATE" status "$DB")" = "0001_telemetry applied" ] || fail "up status"
+[ "$("$MIGRATE" status "$DB")" = "$APPLIED_STATUS" ] || fail "up status"
+
+query "
+DELETE FROM hx_schema_migrations WHERE version = '0002_ledger';
+DROP TABLE hx_task_messages;
+DROP TABLE hx_tasks;
+"
+if status_output=$("$MIGRATE" status "$DB"); then
+    fail "missing 0002 status succeeded"
+fi
+[ "$status_output" = "$(printf '%s\n' "0001_telemetry applied" "0002_ledger pending")" ] || fail "missing 0002 status output"
+"$MIGRATE" up "$DB"
+[ "$("$MIGRATE" status "$DB")" = "$APPLIED_STATUS" ] || fail "restored 0002 status"
+echo "PASS: missing 0002 is reported and fails"
 
 TABLES="hx_schema_migrations hx_sessions hx_prompts hx_tool_events hx_skill_runs hx_patterns hx_audit hx_prompts_fts hx_skill_runs_fts"
 TRIGGERS="hx_audit_no_update hx_audit_no_delete hx_prompts_fts_ai hx_prompts_fts_ad hx_prompts_fts_au hx_skill_runs_fts_ai hx_skill_runs_fts_ad hx_skill_runs_fts_au"
@@ -72,7 +87,7 @@ echo "PASS: up/up, FTS5, foreign keys, append-only audit, WAL, busy_timeout"
 
 "$MIGRATE" down "$DB"
 "$MIGRATE" down "$DB"
-[ "$("$MIGRATE" status "$DB")" = "0001_telemetry pending" ] || fail "down status"
+[ "$("$MIGRATE" status "$DB")" = "$PENDING_STATUS" ] || fail "down status"
 assert_object table hx_schema_migrations 1
 for table in hx_sessions hx_prompts hx_tool_events hx_skill_runs hx_patterns hx_audit hx_prompts_fts hx_skill_runs_fts; do
     assert_object table "$table" 0
@@ -83,7 +98,7 @@ done
 echo "PASS: down/down"
 
 "$MIGRATE" up "$DB"
-[ "$("$MIGRATE" status "$DB")" = "0001_telemetry applied" ] || fail "final up status"
+[ "$("$MIGRATE" status "$DB")" = "$APPLIED_STATUS" ] || fail "final up status"
 echo "PASS: final up"
 
 ddl_tables=$(sed -nE 's/^[[:space:]]*CREATE (VIRTUAL )?TABLE IF NOT EXISTS (hx_[a-z0-9_]+).*/\2/p' "$UP")
