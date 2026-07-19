@@ -1,0 +1,10 @@
+# ponytail: F2 Open Question; measure false positives on 30 real samples in F2-T7 before adding complexity.
+やり直し
+違う
+そうじゃない
+修正して
+戻して
+(?i)\bredo\b
+(?i)\bundo\b
+(?i)\bthat's wrong\b
+(?i)\bfix that\b

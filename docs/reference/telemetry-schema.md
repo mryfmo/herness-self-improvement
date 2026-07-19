@@ -24,6 +24,10 @@ Prompt content is checked against the same patterns as `ci/secret-scan.py`. Each
 
 `PostToolUse` writes the tool name and a normalized `success` or `failure` status to `hx_tool_events`. Duration and exit code are stored when the hook payload provides them. A supplied stderr or error value is masked and limited to 200 characters before storage. `Stop` sets the session status to `completed` and records `ended_at`, inserting a completed session when no start row exists. `SubagentStop` reuses `hx_tool_events` with `tool='subagent'` and `status='success'`; no dedicated subagent table is needed.
 
+When `PostToolUse.tool_name` is exactly `Skill`, the hook also writes `tool_input.skill`, the supplied scope or `unknown`, and the normalized outcome to `hx_skill_runs`. On a later prompt, regular expressions from `.claude/hooks/hx-correction-markers.txt` identify possible corrections. The most recent skill run in the same session is marked `corrected=1` when it falls within 15 minutes; `HX_CORRECTION_WINDOW_MIN` sets another non-negative window.
+
+Correction detection is intentionally a keyword heuristic. It can miss indirect corrections and can flag ordinary uses of a marker. F2-T7 will measure false positives on 30 real samples before the marker list or approach is made more complex.
+
 Insert and input failures do not fail the hook. They append a redacted event line to `~/.agents/hx/telemetry-failures.log`. The next successful insert records `telemetry.failures.recovered` in `hx_audit` with the accumulated failure count, then clears the file.
 
 ## Migration ledger
@@ -84,7 +88,7 @@ Applied versions are `0001_telemetry` and `0002_ledger`. Up runs in that order; 
 | `session_id` | TEXT NOT NULL, FK | Owning `hx_sessions` row; cascades on session deletion. |
 | `ts` | TEXT NOT NULL | Run time. |
 | `skill_name` | TEXT NOT NULL | Activated skill name. |
-| `scope` | TEXT NOT NULL | Company, project, or personal scope. |
+| `scope` | TEXT NOT NULL | Company, project, user, or other supplied scope; `unknown` when unavailable. |
 | `outcome` | TEXT NOT NULL | Run outcome. |
 | `corrected` | INTEGER NOT NULL | Whether a later user correction was detected. |
 

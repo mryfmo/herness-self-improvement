@@ -7,6 +7,7 @@ set -eu
 
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 HOOK="$ROOT/.claude/hooks/hx-telemetry.sh"
+MARKERS="$ROOT/.claude/hooks/hx-correction-markers.txt"
 SETTINGS="$ROOT/.claude/settings.json"
 TMP=$(mktemp -d "${TMPDIR:-/tmp}/hx-telemetry-hooks.XXXXXX")
 DB="$TMP/telemetry.db"
@@ -52,6 +53,7 @@ run_hook() {
 }
 
 [ -x "$HOOK" ] || fail "missing executable telemetry hook"
+[ -f "$MARKERS" ] || fail "missing correction markers"
 [ -f "$SETTINGS" ] || fail "missing project settings"
 "$ROOT/db/migrate.sh" up "$DB"
 
@@ -110,6 +112,49 @@ wait_for_sql 1 "SELECT count(*) FROM hx_tool_events WHERE tool='Bash' AND status
     fail "stderr redaction marker missing"
 echo "PASS: successful and failed tool events record masked bounded details"
 
+[ "$(query "SELECT count(*) FROM hx_skill_runs;")" = 0 ] ||
+    fail "non-Skill tool created a skill run"
+
+run_hook post-tool-use \
+    '{"session_id":"skill-corrected","cwd":"/tmp/demo","tool_name":"Skill","tool_input":{"skill":"crit","scope":"project"},"tool_response":{"success":true}}'
+wait_for_sql 1 "SELECT count(*) FROM hx_skill_runs WHERE session_id='skill-corrected' AND skill_name='crit' AND scope='project' AND outcome='success' AND corrected=0;"
+run_hook prompt-submit \
+    '{"session_id":"skill-corrected","cwd":"/tmp/demo","prompt":"違う、修正して"}'
+wait_for_sql 1 "SELECT corrected FROM hx_skill_runs WHERE session_id='skill-corrected';"
+
+run_hook post-tool-use \
+    '{"session_id":"skill-normal","cwd":"/tmp/demo","tool_name":"Skill","tool_input":{"skill":"docs","scope":"user"},"tool_response":{"success":true}}'
+wait_for_sql 1 "SELECT count(*) FROM hx_skill_runs WHERE session_id='skill-normal';"
+run_hook prompt-submit \
+    '{"session_id":"skill-normal","cwd":"/tmp/demo","prompt":"そのまま続けて"}'
+wait_for_sql 1 "SELECT count(*) FROM hx_prompts WHERE session_id='skill-normal';"
+[ "$(query "SELECT corrected FROM hx_skill_runs WHERE session_id='skill-normal';")" = 0 ] ||
+    fail "normal prompt marked as correction"
+
+run_hook post-tool-use \
+    '{"session_id":"skill-expired","cwd":"/tmp/demo","tool_name":"Skill","tool_input":{"skill":"old-skill","scope":"enterprise"},"tool_response":{"success":true}}'
+wait_for_sql 1 "SELECT count(*) FROM hx_skill_runs WHERE session_id='skill-expired';"
+query "UPDATE hx_skill_runs SET ts=strftime('%Y-%m-%dT%H:%M:%fZ','now','-16 minutes') WHERE session_id='skill-expired';"
+run_hook prompt-submit \
+    '{"session_id":"skill-expired","cwd":"/tmp/demo","prompt":"redo that"}'
+wait_for_sql 1 "SELECT count(*) FROM hx_prompts WHERE session_id='skill-expired';"
+[ "$(query "SELECT corrected FROM hx_skill_runs WHERE session_id='skill-expired';")" = 0 ] ||
+    fail "expired skill run marked as correction"
+
+run_hook post-tool-use \
+    '{"session_id":"skill-override","cwd":"/tmp/demo","tool_name":"Skill","tool_input":{"skill":"unknown-scope"},"tool_response":{"success":true}}'
+wait_for_sql 1 "SELECT count(*) FROM hx_skill_runs WHERE session_id='skill-override' AND scope='unknown';"
+query "UPDATE hx_skill_runs SET ts=strftime('%Y-%m-%dT%H:%M:%fZ','now','-16 minutes') WHERE session_id='skill-override';"
+printf '%s' '{"session_id":"skill-override","cwd":"/tmp/demo","prompt":"fix that"}' |
+    HX_DB_PATH="$DB" HX_FAILURE_LOG="$FAIL_LOG" HX_CORRECTION_WINDOW_MIN=30 \
+        "$HOOK" prompt-submit
+wait_for_sql 1 "SELECT corrected FROM hx_skill_runs WHERE session_id='skill-override';"
+
+run_hook post-tool-use \
+    '{"session_id":"skill-failure","cwd":"/tmp/demo","tool_name":"Skill","tool_input":{"skill":"broken","scope":"project"},"tool_response":{"success":false,"exit_code":1}}'
+wait_for_sql 1 "SELECT count(*) FROM hx_skill_runs WHERE session_id='skill-failure' AND skill_name='broken' AND outcome='failure' AND corrected=0;"
+echo "PASS: skill runs record outcomes, scope fallback, and bounded corrections"
+
 run_hook stop '{"session_id":"session-1","cwd":"/tmp/demo"}'
 wait_for_sql 1 "SELECT count(*) FROM hx_sessions WHERE session_id='session-1' AND status='completed' AND ended_at IS NOT NULL;"
 run_hook stop '{"session_id":"stop-without-start","cwd":"/tmp/demo"}'
@@ -147,7 +192,8 @@ for i in range(20):
     payload = json.dumps({
         "session_id": f"latency-{i}",
         "cwd": "/tmp/demo",
-        "tool_name": "Read",
+        "tool_name": "Skill",
+        "tool_input": {"skill": f"latency-skill-{i}", "scope": "project"},
         "tool_response": {"success": True},
     })
     started = time.perf_counter_ns()
@@ -172,7 +218,7 @@ value = float(sys.argv[1])
 if value >= 100:
     raise SystemExit(f"p95 {value:.3f}ms is not under 100ms")
 PY
-wait_for_sql 1 "SELECT count(*) >= 23 FROM hx_tool_events;"
+wait_for_sql 1 "SELECT count(*) >= 25 FROM hx_skill_runs;"
 echo "PASS: hook invocation p95=${p95}ms (<100ms)"
 
 python3 - "$SETTINGS" <<'PY'
