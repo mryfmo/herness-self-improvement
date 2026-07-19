@@ -5,7 +5,7 @@
 
 set -eu
 
-ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+ROOT=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)
 EVIDENCE="$ROOT/db/hx-evidence.sh"
 HASH_FREEZE="$ROOT/ci/hash-freeze.py"
 SECRET_SCAN="$ROOT/ci/secret-scan.py"
@@ -39,6 +39,21 @@ expect_fail sqlite3 "$DB" "DELETE FROM hx_audit;"
 expect_fail "$EVIDENCE" "$DB" record actor-a event ref-1 not-json
 expect_fail "$EVIDENCE" "$TMP/missing.db" list
 expect_fail "$EVIDENCE" "$HOME/.agents/a008-forbidden.db" list
+
+LIVE_HOME="$TMP/home"
+LIVE_DB="$LIVE_HOME/.agents/live.db"
+mkdir -p "$LIVE_HOME/.agents"
+"$ROOT/db/migrate.sh" up "$LIVE_DB"
+expect_fail env HOME="$LIVE_HOME" "$EVIDENCE" "$LIVE_DB" list
+expect_fail env HOME="$LIVE_HOME" HX_EVIDENCE_ALLOW_LIVE=0 "$EVIDENCE" "$LIVE_DB" list
+live_id=$(env HOME="$LIVE_HOME" HX_EVIDENCE_ALLOW_LIVE=1 \
+    "$EVIDENCE" "$LIVE_DB" record operator phase.dryrun.start phase-f2 '{"approved":true}')
+[ "$live_id" = 1 ] || fail "live opt-in record id"
+expect_fail env HOME="$LIVE_HOME" HX_EVIDENCE_ALLOW_LIVE=1 \
+    "$EVIDENCE" "$LIVE_HOME/.agents/missing.db" list
+sqlite3 "$LIVE_HOME/.agents/unmigrated.db" "SELECT 1;" >/dev/null
+expect_fail env HOME="$LIVE_HOME" HX_EVIDENCE_ALLOW_LIVE=1 \
+    "$EVIDENCE" "$LIVE_HOME/.agents/unmigrated.db" list
 echo "PASS: evidence record, trace, validation, and append-only enforcement"
 
 FROZEN="$TMP/frozen"
