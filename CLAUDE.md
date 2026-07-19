@@ -1,5 +1,5 @@
 <!-- GENERATED FILE — edit rules.src.md -->
-<!-- source-sha256: 4f050e18552021ebbacd4a8012c4b2831b54fe7424f5a0b485f56cf67566b1c3 -->
+<!-- source-sha256: c48677fc52371364696b246a60662f4b19997d32fd87c9f67368972cb0078873 -->
 
 # Claude Code Rules
 
@@ -7,12 +7,14 @@
 
 このリポジトリは、Claude Code と Codex の実務ログから教訓を還流し、スキル・ルール・フックを安全に改善する自己改善ハーネス基盤です。Git を単一の真実源とし、変更は PR と CI を経由します。
 
+設計規律は [Harness × Grounded Graph × Gated RSI の三軸](docs/specs/discipline-v1.0.md)で定義します。
+
 ## Documentation map
 
 - [Work plan](docs/plans/WORKPLAN-HARNESS-SELF-IMPROVEMENT-v1.1.md)
 - [Specification](docs/specs/SPEC-HARNESS-SELF-IMPROVEMENT-v1.0.md)
 - [Research report](docs/reference/REPORT-HARNESS-SELF-IMPROVEMENT-v1.0.md)
-- [Architecture decisions](docs/decisions/ADR-HARNESS-SELF-IMPROVEMENT-v1.0.md)
+- [Architecture decisions](docs/decisions/README.md)
 
 ## Change flow
 
