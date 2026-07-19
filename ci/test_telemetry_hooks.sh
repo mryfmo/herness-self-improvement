@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 # @file ci/test_telemetry_hooks.sh
-# @brief Verify asynchronous SessionStart and UserPromptSubmit telemetry hooks.
+# @brief Verify asynchronous session, prompt, tool, and stop telemetry hooks.
 
 set -eu
 
@@ -95,9 +95,34 @@ wait_for_sql 1 "SELECT count(*) FROM hx_prompts;"
     fail "redaction marker missing"
 echo "PASS: both events recorded and prompt masked"
 
-printf '%s' '{"session_id":"session-1","cwd":"/tmp/demo","prompt":"failure"}' |
+run_hook post-tool-use \
+    '{"session_id":"session-1","cwd":"/tmp/demo","tool_name":"Bash","tool_response":{"success":true,"duration_ms":42,"exit_code":0,"stderr":""}}'
+wait_for_sql 1 "SELECT count(*) FROM hx_tool_events WHERE tool='Bash' AND status='success' AND duration_ms=42 AND exit_code=0;"
+
+run_hook post-tool-use \
+    "{\"session_id\":\"session-1\",\"cwd\":\"/tmp/demo\",\"tool_name\":\"Bash\",\"tool_response\":{\"success\":false,\"duration_ms\":77,\"exit_code\":2,\"stderr\":\"failed $dummy $(printf '%0240s' '')\"}}"
+wait_for_sql 1 "SELECT count(*) FROM hx_tool_events WHERE tool='Bash' AND status='failure' AND duration_ms=77 AND exit_code=2;"
+[ "$(query "SELECT length(error_summary) <= 200 FROM hx_tool_events WHERE status='failure';")" = 1 ] ||
+    fail "stderr summary exceeds 200 characters"
+[ "$(query "SELECT instr(error_summary, '$dummy') FROM hx_tool_events WHERE status='failure';")" = 0 ] ||
+    fail "stderr secret stored"
+[ "$(query "SELECT instr(error_summary, '[REDACTED:github_token]') > 0 FROM hx_tool_events WHERE status='failure';")" = 1 ] ||
+    fail "stderr redaction marker missing"
+echo "PASS: successful and failed tool events record masked bounded details"
+
+run_hook stop '{"session_id":"session-1","cwd":"/tmp/demo"}'
+wait_for_sql 1 "SELECT count(*) FROM hx_sessions WHERE session_id='session-1' AND status='completed' AND ended_at IS NOT NULL;"
+run_hook stop '{"session_id":"stop-without-start","cwd":"/tmp/demo"}'
+wait_for_sql 1 "SELECT count(*) FROM hx_sessions WHERE session_id='stop-without-start' AND status='completed' AND ended_at IS NOT NULL;"
+echo "PASS: stop completes existing and missing sessions"
+
+run_hook subagent-stop '{"session_id":"session-1","cwd":"/tmp/demo","agent_id":"worker-1"}'
+wait_for_sql 1 "SELECT count(*) FROM hx_tool_events WHERE session_id='session-1' AND tool='subagent' AND status='success';"
+echo "PASS: subagent stop records a tool event"
+
+printf '%s' '{"session_id":"session-1","cwd":"/tmp/demo","tool_name":"Bash","tool_response":{"success":false}}' |
     HX_DB_PATH="$TMP/missing/db.sqlite" HX_FAILURE_LOG="$FAIL_LOG" \
-        "$HOOK" prompt-submit
+        "$HOOK" post-tool-use
 wait_for_failure
 
 run_hook prompt-submit \
@@ -119,10 +144,15 @@ env = os.environ | {
     "HX_FAILURE_LOG": os.environ["FAIL_LOG"],
 }
 for i in range(20):
-    payload = json.dumps({"session_id": f"latency-{i}", "cwd": "/tmp/demo"})
+    payload = json.dumps({
+        "session_id": f"latency-{i}",
+        "cwd": "/tmp/demo",
+        "tool_name": "Read",
+        "tool_response": {"success": True},
+    })
     started = time.perf_counter_ns()
     result = subprocess.run(
-        [os.environ["HOOK"], "session-start"],
+        [os.environ["HOOK"], "post-tool-use"],
         input=payload,
         text=True,
         env=env,
@@ -142,7 +172,7 @@ value = float(sys.argv[1])
 if value >= 100:
     raise SystemExit(f"p95 {value:.3f}ms is not under 100ms")
 PY
-wait_for_sql 1 "SELECT count(*) >= 21 FROM hx_sessions;"
+wait_for_sql 1 "SELECT count(*) >= 23 FROM hx_tool_events;"
 echo "PASS: hook invocation p95=${p95}ms (<100ms)"
 
 python3 - "$SETTINGS" <<'PY'
@@ -153,10 +183,13 @@ settings = json.load(open(sys.argv[1], encoding="utf-8"))
 expected = {
     "SessionStart": "session-start",
     "UserPromptSubmit": "prompt-submit",
+    "PostToolUse": "post-tool-use",
+    "Stop": "stop",
+    "SubagentStop": "subagent-stop",
 }
 for event, subcommand in expected.items():
     hooks = settings["hooks"][event]
     commands = [hook["command"] for group in hooks for hook in group["hooks"]]
     assert any("hx-telemetry.sh" in command and subcommand in command for command in commands)
 PY
-echo "PASS: project settings register both hooks"
+echo "PASS: project settings register all five lifecycle hooks"

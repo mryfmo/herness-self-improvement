@@ -14,13 +14,15 @@ Run `db/migrate.sh up|down|status <db-path>`. The wrapper enables WAL and a 5,00
 
 Timestamps are ISO 8601 text. Boolean fields are integers constrained to `0` or `1`.
 
-## Session and prompt hooks
+## Lifecycle hooks
 
-Project settings register `.claude/hooks/hx-telemetry.sh` for `SessionStart` and `UserPromptSubmit`. The hook copies its JSON input and starts the SQLite writer in the background, so the calling hook exits without waiting for the insert. Project settings take effect at the next Claude session start; live-session measurement belongs to the P1-F2-T7 dry run.
+Project settings register `.claude/hooks/hx-telemetry.sh` for `SessionStart`, `UserPromptSubmit`, `PostToolUse`, `Stop`, and `SubagentStop`. The hook copies its JSON input and starts the SQLite writer in the background, so the calling hook exits without waiting for the insert. Project settings take effect at the next Claude session start; live-session measurement belongs to the P1-F2-T7 dry run.
 
 The default database path comes from the agmsg `agmsg_db_path` storage resolver. `HX_DB_PATH` overrides it. Before applying migrations to the live database, create and hash a SQLite `.backup`.
 
 Prompt content is checked against the same patterns as `ci/secret-scan.py`. Each match is replaced with `[REDACTED:<rule>]`; `hx_prompts.masked` is `1` when at least one replacement occurred.
+
+`PostToolUse` writes the tool name and a normalized `success` or `failure` status to `hx_tool_events`. Duration and exit code are stored when the hook payload provides them. A supplied stderr or error value is masked and limited to 200 characters before storage. `Stop` sets the session status to `completed` and records `ended_at`, inserting a completed session when no start row exists. `SubagentStop` reuses `hx_tool_events` with `tool='subagent'` and `status='success'`; no dedicated subagent table is needed.
 
 Insert and input failures do not fail the hook. They append a redacted event line to `~/.agents/hx/telemetry-failures.log`. The next successful insert records `telemetry.failures.recovered` in `hx_audit` with the accumulated failure count, then clears the file.
 
