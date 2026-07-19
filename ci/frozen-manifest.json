@@ -4,7 +4,7 @@
     ".github/workflows/ci.yml": "f0c3292c2a558cb59207dd020d0429dc125cef40518a31a758648783a9f7197e",
     "ci/.gitkeep": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
     "ci/check-docs.py": "c14cfbf322a6cf4b8f10e7d0217712e49c74602c4ec07e56005084425c5f1968",
-    "ci/docs-frontmatter-exempt.txt": "9b910cedc4c5d156b6b519c91098629d064e9543ae03971bc2c4f0fa044876ee",
+    "ci/docs-frontmatter-exempt.txt": "01cb47f7c38bb0674859a1c0cabf4322af7834c1db6cadf975c8d871a473eb39",
     "ci/frozen-paths.txt": "8aec3a1f144ea7959d0c7be357060531e5ec3ee62e5fa15d0bf6d87b285af6a7",
     "ci/generate-rules.py": "f16438736190c8d9a2d233904c00d02754c22e45f7e52ede474ff59100f6cc65",
     "ci/hash-freeze.py": "dba1617d94ba8a65321167d847f969bb4628991b8b45fba218c1ff672a5e8358",

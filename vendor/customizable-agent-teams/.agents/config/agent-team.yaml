@@ -1,0 +1,152 @@
+team:
+  name: customizable-agent-teams
+  session: agent-team
+
+agents:
+  - id: lead
+    role: lead
+    cli: claude
+    model: claude-fable-5
+    effort: xhigh
+    window: lead
+
+  - id: manager
+    role: manager
+    cli: codex
+    model: gpt-5.6-sol
+    effort: xhigh
+    window: manager
+
+  - id: strategist
+    role: strategist
+    cli: codex
+    model: gpt-5.6-sol
+    effort: xhigh
+    window: strategist
+
+  - id: architect
+    role: architect
+    cli: codex
+    model: gpt-5.6-sol
+    effort: xhigh
+    window: architect
+
+  - id: general-reviewer-1
+    role: general-reviewer
+    cli: codex
+    model: gpt-5.6-sol
+    effort: low
+    window: general-reviewer-1
+
+  - id: general-reviewer-2
+    role: general-reviewer
+    cli: codex
+    model: gpt-5.6-sol
+    effort: low
+    window: general-reviewer-2
+
+  - id: general-reviewer-3
+    role: general-reviewer
+    cli: codex
+    model: gpt-5.6-sol
+    effort: low
+    window: general-reviewer-3
+
+  - id: general-reviewer-4
+    role: general-reviewer
+    cli: codex
+    model: gpt-5.6-sol
+    effort: low
+    window: general-reviewer-4
+
+  - id: general-reviewer-5
+    role: general-reviewer
+    cli: codex
+    model: gpt-5.6-sol
+    effort: low
+    window: general-reviewer-5
+
+  - id: general-worker-1
+    role: general-worker
+    cli: codex
+    model: gpt-5.6-luna
+    effort: high
+    window: general-worker-1
+    supervisor: general-reviewer-1
+
+  - id: general-worker-2
+    role: general-worker
+    cli: codex
+    model: gpt-5.6-luna
+    effort: high
+    window: general-worker-2
+    supervisor: general-reviewer-2
+
+  - id: general-worker-3
+    role: general-worker
+    cli: codex
+    model: gpt-5.6-luna
+    effort: high
+    window: general-worker-3
+    supervisor: general-reviewer-3
+
+  - id: hard-task-worker-1
+    role: hard-task-worker
+    cli: codex
+    model: gpt-5.6-sol
+    effort: xhigh
+    window: hard-task-worker-1
+    supervisor: general-reviewer-4
+
+  - id: hard-task-worker-2
+    role: hard-task-worker
+    cli: codex
+    model: gpt-5.6-sol
+    effort: xhigh
+    window: hard-task-worker-2
+    supervisor: general-reviewer-5
+
+  - id: research-worker-1
+    role: research-worker
+    cli: codex
+    model: gpt-5.6-luna
+    effort: high
+
+  - id: research-worker-2
+    role: research-worker
+    cli: codex
+    model: gpt-5.6-luna
+    effort: high
+
+  - id: research-worker-3
+    role: research-worker
+    cli: codex
+    model: gpt-5.6-luna
+    effort: high
+
+  - id: research-worker-4
+    role: research-worker
+    cli: codex
+    model: gpt-5.6-luna
+    effort: high
+
+  - id: express-worker-1
+    role: express-worker
+    cli: codex
+    model: gpt-5.6-luna
+    effort: high
+
+  - id: frontend-critic-1
+    role: frontend-critic
+    cli: claude
+    model: claude-opus-4-8
+    effort: xhigh
+    window: frontend-critic-1
+
+  - id: frontend-worker-1
+    role: frontend-worker
+    cli: codex
+    model: gpt-5.6-sol
+    effort: xhigh
+    window: frontend-worker-1
+    supervisor: frontend-critic-1
