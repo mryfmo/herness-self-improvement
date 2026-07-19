@@ -5,13 +5,11 @@
 
 set -eu
 
-ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+ROOT=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)
 MIGRATE="$ROOT/db/migrate.sh"
 UP="$ROOT/db/migrations/0001_telemetry.up.sql"
 DOC="$ROOT/docs/reference/telemetry-schema.md"
 DB=$(mktemp "${TMPDIR:-/tmp}/hx-telemetry.XXXXXX")
-APPLIED_STATUS=$(printf '%s\n' "0001_telemetry applied" "0002_ledger applied")
-PENDING_STATUS=$(printf '%s\n' "0001_telemetry pending" "0002_ledger pending")
 trap 'rm -f "$DB" "$DB-wal" "$DB-shm"' EXIT
 
 fail() {
@@ -31,6 +29,21 @@ assert_object() {
     [ "$actual" = "$expected" ] || fail "$type $name: expected $expected, got $actual"
 }
 
+expected_status() {
+    default_state=$1
+    pending_version=${2:-}
+    for migration in "$ROOT"/db/migrations/*.up.sql; do
+        version=${migration##*/}
+        version=${version%.up.sql}
+        state=$default_state
+        [ "$version" != "$pending_version" ] || state=pending
+        printf '%s %s\n' "$version" "$state"
+    done
+}
+
+APPLIED_STATUS=$(expected_status applied)
+PENDING_STATUS=$(expected_status pending)
+
 [ -x "$MIGRATE" ] || fail "missing executable db/migrate.sh"
 [ -f "$UP" ] || fail "missing up migration"
 [ -f "$DOC" ] || fail "missing schema documentation"
@@ -47,7 +60,7 @@ DROP TABLE hx_tasks;
 if status_output=$("$MIGRATE" status "$DB"); then
     fail "missing 0002 status succeeded"
 fi
-[ "$status_output" = "$(printf '%s\n' "0001_telemetry applied" "0002_ledger pending")" ] || fail "missing 0002 status output"
+[ "$status_output" = "$(expected_status applied 0002_ledger)" ] || fail "missing 0002 status output"
 "$MIGRATE" up "$DB"
 [ "$("$MIGRATE" status "$DB")" = "$APPLIED_STATUS" ] || fail "restored 0002 status"
 echo "PASS: missing 0002 is reported and fails"
@@ -59,6 +72,9 @@ for table in $TABLES; do
 done
 for trigger in $TRIGGERS; do
     assert_object trigger "$trigger" 1
+done
+for view in hx_v_skill_daily hx_v_tool_daily hx_v_prompt_repetition_daily; do
+    assert_object view "$view" 1
 done
 
 query "
@@ -94,6 +110,9 @@ for table in hx_sessions hx_prompts hx_tool_events hx_skill_runs hx_patterns hx_
 done
 for trigger in $TRIGGERS; do
     assert_object trigger "$trigger" 0
+done
+for view in hx_v_skill_daily hx_v_tool_daily hx_v_prompt_repetition_daily; do
+    assert_object view "$view" 0
 done
 echo "PASS: down/down"
 

@@ -44,6 +44,8 @@ jobs:
         run: ci/test_telemetry_hooks.sh
       - name: Test task ledger
         run: ci/test_task_ledger.sh
+      - name: Test daily metrics
+        run: ci/test_metrics.sh
       - name: Test worker bridge
         run: ci/test_worker_bridge.sh
       - name: Smoke-test SQLite load
