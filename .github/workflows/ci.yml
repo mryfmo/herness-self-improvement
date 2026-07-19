@@ -54,6 +54,8 @@ jobs:
         run: ci/test_reconcile.sh
       - name: Test worker bridge
         run: ci/test_worker_bridge.sh
+      - name: Test team configuration
+        run: ci/test_team_config.sh
       - name: Smoke-test SQLite load
         run: ci/test_sqlite_load.sh
       - name: Test evidence and gates
