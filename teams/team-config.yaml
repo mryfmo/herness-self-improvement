@@ -1,0 +1,23 @@
+version: 1
+roles:
+  - name: orchestrator
+    alias: lead-manager
+    agent: claude
+    model: claude-fable5high
+    effort: high
+    supervisor: none
+    parallel: 1
+  - name: worker
+    alias: implementation-worker
+    agent: codex
+    model: gpt56sol-high
+    effort: high
+    supervisor: orchestrator
+    parallel: 1
+  - name: reviewer
+    alias: adversarial-verifier
+    agent: codex
+    model: gpt56sol-high
+    effort: high
+    supervisor: orchestrator
+    parallel: 1
