@@ -13,6 +13,10 @@ dotfiles にある8件を、標準 frontmatter を付けた統治済みの写し
 SHA-256 は、移行元と移行先の `SKILL.md` から先頭 frontmatter を外し、改行を
 LF に正規化した本文に対する値。8件すべて一致している。
 
+dotfiles は ChezMoi の命名規則を使うため、`agmsg/scripts/` の
+`executable_*.sh` は移行先で接頭辞を外した実行時ファイル名へ展開した。
+ファイル内容と実行権限は移行元から変えていない。
+
 | skill | dotfiles 内の移行元 | 本文 SHA-256 | scope | eval |
 | --- | --- | --- | --- | --- |
 | `agmsg` | `home/dot_agents/skills/agmsg/` | `19acaa43e33d81b67bc59ec081b69543c38dbf392e93daf7a9bdbd0301d97b48` | `org` | debt: P1-F4-T5 |
