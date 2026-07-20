@@ -220,7 +220,11 @@ cmd_spawn() {
     fi
 
     local codex wrapper
-    codex=$(command -v codex) || die "codex is not installed"
+    if [ "$dry_run" -eq 1 ]; then
+        codex=codex
+    else
+        codex=$(command -v codex) || die "codex is not installed"
+    fi
     # shellcheck disable=SC2016 # Variables expand in the Herdr child.
     wrapper='
 codex() {
