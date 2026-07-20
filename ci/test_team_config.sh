@@ -214,7 +214,7 @@ set -e
 [ "$race_worker_status" -eq 0 ] || [ "$race_reviewer_status" -eq 0 ] \
     || fail "concurrent spawns both failed"
 
-if rg -n -- '--dangerous[l]y-' \
+if grep -En -e '--dangerous[l]y-' \
     "$ROOT/bin/hx-team.sh" \
     "$ROOT/teams/team-config.yaml" \
     "$ROOT/docs/reference/agent-teams-integration.md"; then

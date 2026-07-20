@@ -24,7 +24,7 @@
     "ci/test_skill_scan.py": "51ba63e025080ec0265751388e700ad5257a9a5743c57cd9a4d8669da05adf5c",
     "ci/test_sqlite_load.sh": "4f6de0c00bc18c9ee7eccffe1cd60dc8c5ea8136f76332e466ec83fbf2549193",
     "ci/test_task_ledger.sh": "9c5ca3ca54a0b04cb8407f521f521f8f2e1ac74addf275a83c61c13274d21241",
-    "ci/test_team_config.sh": "26ac3cd1f63cd01fc10655a921c5901393c923b0cbf548303e4a3372fe150f6d",
+    "ci/test_team_config.sh": "28ca3c3e02c18c3b8ddd736e2db27c077454f823079ac1dbed770a8b0847f8b1",
     "ci/test_telemetry_hooks.sh": "38a7fe9c78f53c4de4656ab6edd201060403c778fb470288b9d1d9fbd049f902",
     "ci/test_worker_bridge.sh": "4d7924308812a16dc7398fb8ed9e4aac2c3f87c6628782938597dfa386ee6825",
     "db/hx-evidence.sh": "661f1a3d1c952e89a8e865bf036ce950f08583f2c64abaab40c192538f4e13f6",
