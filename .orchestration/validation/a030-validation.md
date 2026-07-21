@@ -145,3 +145,5 @@ payload と一致し、修正すると無改変性を壊すため保持した。
 `make require-crit-review` は target 不在だった。Codex native review は3件を報告し、
 evidence 欠落と既存 vendor の台帳欠落を修正した。agent instruction の指摘は上記の
 運用境界と残存リスクとして記録した。vendor payload は変更していない。
+
+PR: https://github.com/mryfmo/herness-self-improvement/pull/30

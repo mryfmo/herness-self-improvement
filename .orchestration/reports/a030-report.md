@@ -2,12 +2,12 @@
 
 ## Status
 
-- status: implementation_complete
+- status: pr_open
 - task: 第三者資産7件の無改変 vendor と登録台帳
 - ledger: `hx-ff8b32a66241252f92bdb6dca8bcb629`
 - branch: `a030/third-party-vendor`
-- commit: `fa59771`
-- PR: pending
+- commit: `a450e34`
+- PR: https://github.com/mryfmo/herness-self-improvement/pull/30
 
 ## Result
 
