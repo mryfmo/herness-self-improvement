@@ -9,4 +9,6 @@
   exact allowlist と Python standard library の整合性検証を使用
 - humanizer effect: registry / provenance / evidence を事実を増やさず運用判断しやすい日本語へ整理
 - gh-first effect: GitHub情報はghを先に用い、全差分を要約したPR本文とURLを記録
+- gh-address-comments effect: thread-aware GraphQL dataで唯一のinline指摘を確認し、
+  修正済みであることを検証。明示依頼のないreply / resolveは行わなかった
 - output skill: none

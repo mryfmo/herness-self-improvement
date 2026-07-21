@@ -146,4 +146,16 @@ payload と一致し、修正すると無改変性を壊すため保持した。
 evidence 欠落と既存 vendor の台帳欠落を修正した。agent instruction の指摘は上記の
 運用境界と残存リスクとして記録した。vendor payload は変更していない。
 
-PR: https://github.com/mryfmo/herness-self-improvement/pull/30
+```text
+product PR: https://github.com/mryfmo/herness-self-improvement/pull/30
+head: 449c017b5057a9489a0313392cc5ee7c40c07022
+PR CI: 29790841353 success
+PR CI: 29790843601 success
+merge: 5d4a9e68c8231b52e9980f393f93bd6d64fd90a6
+main CI: 29791931736 success
+```
+
+GitHub Codex の inline comment 1件は、report の旧 amend SHA が到達不能という指摘だった。
+最終 report は product merge SHA を記録する。thread は明示依頼なしに返信・resolveしない
+write-safetyに従い未操作だが、要求した内容は反映済みである。CodeRabbitは1085 filesが
+free-plan上限150を超えたためreview skip、status success、actionable findingなしだった。

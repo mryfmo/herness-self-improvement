@@ -1,7 +1,8 @@
 # a030 Sandbox
 
 - repository: `/Users/mryfmo/Workspace/herness-self-improvement`
-- branch: `a030/third-party-vendor`
+- product branch: `a030/third-party-vendor`（squash merge後に削除）
+- final evidence branch: `a030/final-evidence`
 - task-file-first: inbox の task file と secret-scan addendum を全文読了後、ledger を
   claim / start
 - ledger id: `hx-ff8b32a66241252f92bdb6dca8bcb629`
@@ -16,6 +17,8 @@
 - secret boundary: raw allowlist value は validation に転記せず、SHA-256 prefix のみ記録
 - forbidden actions: force-push、main直接push、scanner除外・弱体化、githook、ADR、
   4文書、規律文書、dependency の変更なし
+- GitHub flow: product PR #30をsquash mergeしmain CI成功。最終merge/CI記録だけを
+  evidence branchで更新
 - worklog: task Allowed files に含まれないため `.agents/worklog/codex/` は更新せず、
   turn plan と必須 artifact で進行管理
 - existing dirty worktree: a019以降の未追跡 orchestration files と `ci/__pycache__/` は
