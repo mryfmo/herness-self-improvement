@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "dependencies": {
+    "@highlightjs/cdn-assets": "^11.11.1",
+    "@sanity/diff-match-patch": "^3.2.0",
+    "highlightjs-heex": "^1.0.1",
+    "markdown-it": "^14.3.0",
+    "mermaid": "^11.16.0"
+  },
+  "scripts": {
+    "update-deps": "bun run copy-deps.js",
+    "test:frontend": "node web/__tests__/markdown-patch.test.mjs && node web/__tests__/crit-diff-renderer.test.js && node web/test-diff-render.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1",
+    "eslint": "^10.7.0",
+    "stylelint": "^17.14.0"
+  }
+}

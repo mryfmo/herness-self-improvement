@@ -1,0 +1,1002 @@
+/* ===== Theme Variables =====
+   Migrated to crit design system tokens (v2).
+   Brand tokens (--crit-*) for header/chrome/CTAs.
+   Editor tokens (--crit-editor-*) for review content area (Tokyo Night).
+   Each theme defines the full set of CSS custom properties.
+   To add a new theme: add a [data-theme="your-theme"] block below,
+   add an hljs color block at the bottom, and add a button to the theme pill in index.html.
+*/
+
+/* ===== Default (dark) =====
+   These :root values are the fallback when prefers-color-scheme is unsupported. */
+:root {
+  /* ---- Brand surfaces (header, chrome, CTAs) ---- */
+  --crit-bg-page:     #0e0f13;
+  --crit-bg-card:     #171922;
+  --crit-bg-elevated: #242835;
+
+  /* ---- Brand foreground ---- */
+  --crit-fg-primary:   #e8ebf5;
+  --crit-fg-secondary: #9ba3bf;
+  --crit-fg-muted:     #646c85;
+  --crit-fg-on-brand:  #ffffff;
+
+  /* ---- Brand colors ---- */
+  --crit-brand:         #85aaf8;
+  --crit-brand-hover:   #94bcfb;
+  --crit-brand-subtle:  rgba(133, 170, 248, 0.10);
+  --crit-brand-bg:      rgba(133, 170, 248, 0.15);
+  --crit-line-focus-bg: rgba(133, 170, 248, 0.10);
+  --crit-brand-cta:       #406fcc;
+  --crit-brand-cta-hover: #4574cc;
+
+  /* ---- Header pill tokens (neutral chip palette) ---- */
+  --crit-pill-bg:        #21262d;
+  --crit-pill-bg-hover:  #2a3038;
+  --crit-pill-fg:        #c9d1d9;
+  --crit-pill-fg-muted:  #8b949e;
+  --crit-pill-border:    #30363d;
+  --crit-rail-fg:        #7d8590;
+  --crit-rail-arrow:     #6e7681;
+
+  /* ---- Editor surfaces (Tokyo Night) ---- */
+  --crit-editor-bg:          #1a1b26;
+  --crit-editor-bg-card:     #16171f;
+  --crit-editor-bg-elevated: #262940;
+  --crit-editor-bg-hover:    #2d3150;
+  --crit-editor-bg-gutter:   #131420;
+  --crit-editor-code-bg:     #1e2030;
+  --crit-editor-comment-bg:  #1a1f36;
+
+  /* ---- Editor foreground ---- */
+  --crit-editor-fg:           #c0caf5;
+  --crit-editor-fg-secondary: #a9b1d6;
+  --crit-editor-fg-muted:     #9aa1c8;
+
+  /* ---- Editor scrollbar ---- */
+  --crit-editor-scrollbar-bg:    #1a1b26;
+  --crit-editor-scrollbar-thumb: #3b4261;
+
+  /* ---- Semantic colors ---- */
+  --crit-green:  #56d364;
+  --crit-red:    #f7768e;
+  --crit-orange: #ff9e64;
+  --crit-yellow: #e0af68;
+  --crit-purple: #a371f7;
+  /* Visual line mode cursor accent. Distinct from --crit-orange (modified
+     line indicator) and --crit-yellow (warning / modified badges). */
+  --crit-visual-accent: #e0af68;
+
+  /* ---- Borders ---- */
+  --crit-border:         #232632;
+  --crit-border-strong:  #2f3342;
+  --crit-border-comment: #3d59a1;
+
+  /* ---- Radii ---- */
+  --crit-r-sm: 4px;
+  --crit-r-md: 6px;
+  --crit-r-lg: 8px;
+  --crit-r-xl: 12px;
+
+  /* ---- Shadow ---- */
+  --crit-shadow: 0 2px 8px rgba(0,0,0,0.3);
+
+  /* ---- Motion ---- */
+  --crit-dur-fast:   120ms;
+  --crit-dur-base:   180ms;
+  --crit-dur-slow:   280ms;
+  --crit-ease:       cubic-bezier(0.2, 0.6, 0.2, 1);
+  --crit-ease-in:    cubic-bezier(0.4, 0, 1, 1);
+  --crit-ease-out:   cubic-bezier(0, 0, 0.2, 1);
+
+  /* ---- Focus ring ---- */
+  --crit-focus: 0 0 0 2px var(--crit-bg-page), 0 0 0 4px var(--crit-brand);
+
+  /* ---- Fonts ---- */
+  --crit-font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --crit-font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+
+  /* ---- Icons (SVG masks) ---- */
+  --crit-icon-github: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='currentColor'%3E%3Cpath d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0016 8c0-4.42-3.58-8-8-8z'/%3E%3C/svg%3E");
+
+  /* ---- Editor-specific: diff highlights ---- */
+  --crit-diff-add-bg:       rgba(86, 211, 100, 0.08);
+  --crit-diff-add-line-bg:  rgba(86, 211, 100, 0.18);
+  --crit-diff-del-bg:       rgba(247, 118, 142, 0.06);
+  --crit-diff-del-line-bg:  rgba(247, 118, 142, 0.14);
+  --crit-diff-add-gutter:   rgba(86, 211, 100, 0.12);
+  --crit-diff-del-gutter:   rgba(247, 118, 142, 0.08);
+  --crit-diff-word-add-bg:  rgba(63, 185, 80, 0.18);
+  --crit-diff-word-del-bg:  rgba(248, 81, 73, 0.18);
+
+  /* ---- Editor-specific: comment range ---- */
+  --crit-comment-range-bg: rgba(210, 153, 34, 0.13);
+
+  /* ---- Editor-specific: table ---- */
+  --crit-table-stripe: rgba(133, 170, 248, 0.04);
+
+  /* ---- Editor-specific: blockquote ---- */
+  --crit-blockquote-border: #3d59a1;
+  --crit-blockquote-bg:     rgba(61, 89, 161, 0.08);
+
+  /* ---- Badge backgrounds ---- */
+  --crit-badge-resolved-bg:  rgba(86, 211, 100, 0.12);
+  --crit-badge-modified-bg:  rgba(224, 175, 104, 0.12);
+  --crit-badge-deleted-bg:   rgba(247, 118, 142, 0.10);
+  --crit-badge-removed-bg:   rgba(169, 177, 214, 0.12);
+  --crit-badge-removed-color: var(--crit-editor-fg-secondary);
+  --crit-badge-removed-border: color-mix(in srgb, var(--crit-editor-fg-secondary) 20%, transparent);
+  --crit-live-badge-bg:      rgba(52, 211, 153, 0.1);
+
+  /* ---- Yellow states ---- */
+  --crit-yellow-subtle: rgba(224, 175, 104, 0.08);
+  --crit-yellow-bg:     rgba(224, 175, 104, 0.14);
+  --crit-yellow-border: rgba(224, 175, 104, 0.2);
+
+  /* ---- Drifted comment ---- */
+  --crit-drift-badge-fg:     #f0a030;
+  --crit-drift-badge-bg:     rgba(240, 160, 48, 0.14);
+  --crit-drift-badge-border: rgba(240, 160, 48, 0.30);
+
+  --crit-drift-card-border:  rgba(240, 160, 48, 0.25);
+
+  /* ---- Green subtle ---- */
+  --crit-green-subtle: rgba(86, 211, 100, 0.10);
+
+  /* ---- Finish/disconnected state ---- */
+  --crit-finish-pill-bg:     rgba(86, 211, 100, 0.10);
+  --crit-finish-pill-border: rgba(86, 211, 100, 0.20);
+  --crit-finish-pill-fg:     #56d364;
+  --crit-finish-body-fg:     #9ba3bf;
+
+  /* ---- UI states ---- */
+  --crit-overlay-bg:       rgba(0,0,0,0.5);
+  --crit-btn-danger-hover-bg:  rgba(247, 118, 142, 0.1);
+  --crit-toast-error-bg:       rgba(247, 118, 142, 0.14);
+  --crit-toast-ghost-hover-bg: rgba(255,255,255,0.06);
+  --crit-btn-success-border:   rgba(86, 211, 100, 0.35);
+  --crit-btn-success-hover-bg: rgba(86, 211, 100, 0.08);
+  --crit-share-confirm-bg:     rgba(247, 118, 142, 0.08);
+  --crit-share-confirm-border: rgba(247, 118, 142, 0.15);
+  --crit-change-flash-bg:      rgba(255, 158, 100, 0.15);
+  --crit-resolve-hover-bg:     rgba(86, 211, 100, 0.1);
+  --crit-quote-highlight-bg:     rgba(250, 200, 60, 0.12);
+  --crit-quote-highlight-border: rgba(250, 200, 60, 0.4);
+  --crit-qr-bg: #fff;
+
+  /* ---- Comment reference chip ---- */
+  --crit-comment-ref-color:       #85aaf8;
+  --crit-comment-ref-color-hover: #94bcfb;
+  --crit-comment-ref-underline:   rgba(133, 170, 248, 0.35);
+  --crit-comment-ref-flash-bg:    rgba(187, 128, 9, 0.35);
+  --crit-comment-ref-flash-ring:  rgba(187, 128, 9, 0.85);
+
+  --author-0-bg: rgba(110,160,230,0.15);
+  --author-0-border: rgba(110,160,230,0.35);
+  --author-0-fg: #7ab0f0;
+  --author-1-bg: rgba(225,95,95,0.15);
+  --author-1-border: rgba(225,95,95,0.35);
+  --author-1-fg: #e87070;
+  --author-2-bg: rgba(90,190,115,0.15);
+  --author-2-border: rgba(90,190,115,0.35);
+  --author-2-fg: #6cc880;
+  --author-3-bg: rgba(215,175,70,0.15);
+  --author-3-border: rgba(215,175,70,0.35);
+  --author-3-fg: #d9b458;
+  --author-4-bg: rgba(165,105,220,0.15);
+  --author-4-border: rgba(165,105,220,0.35);
+  --author-4-fg: #b580e0;
+  --author-5-bg: rgba(85,200,200,0.15);
+  --author-5-border: rgba(85,200,200,0.35);
+  --author-5-fg: #60d0d0;
+
+  /* ---- Live-mode chrome (R2: only iframe pane tokens; markers in Phase D) ---- */
+  --crit-live-iframe-frame: #2f3342;
+  --crit-live-iframe-bg:    #0e0f13;
+
+  /* ---- Phase C: composer, ancestor menu, mode toggle, toast ---- */
+  --crit-live-composer-bg:           #1a1c23;
+  --crit-live-composer-border:       #2f3342;
+  --crit-live-composer-input-bg:     #0e0f13;
+  --crit-live-composer-error-fg:     #f85149;
+  --crit-live-ancestor-menu-bg:      #1a1c23;
+  --crit-live-ancestor-menu-fg:      #e6e8ed;
+  --crit-live-ancestor-menu-hover-bg:#2f3342;
+  --crit-live-toast-bg:              #1a1c23;
+  --crit-live-toast-fg:              #e6e8ed;
+  --crit-live-toast-border:          #2f3342;
+
+  /* ---- Phase D: markers + drifted tray + re-anchor ---- */
+  --crit-live-marker-bg:             #3b82f6;
+  --crit-live-marker-fg:             #ffffff;
+  --crit-live-marker-border:         rgba(255,255,255,0.18);
+  --crit-live-marker-shadow:         0 1px 3px rgba(0,0,0,0.5);
+  --crit-live-marker-focus-ring:     #fbbf24;
+  --crit-live-reanchor-active-outline: #f59e0b;
+
+  /* ---- Phase E: drift-this-round, focus, tooltip, marker flash, menu hl ---- */
+  --crit-live-focus-ring:             #fbbf24;
+  --crit-live-tooltip-bg:             #1c1f29;
+  --crit-live-tooltip-fg:             #e6e8ef;
+  --crit-live-tooltip-border:         #2f3342;
+  --crit-live-marker-flash-bg:        rgba(245, 158, 11, 0.7);
+  --crit-live-menu-highlight-bg:      rgba(59, 130, 246, 0.18);
+  --crit-live-menu-highlight-fg:      #e6e8ef;
+
+  /* ---- Org share modal ---- */
+  --crit-option-hover:       rgba(133, 170, 248, 0.06);
+  --crit-option-selected-bg: rgba(133, 170, 248, 0.08);
+  --crit-focus-ring:         rgba(133, 170, 248, 0.5);
+  --crit-green-hover:        #6ade7a;
+  --crit-vis-org-bg:         rgba(133, 170, 248, 0.10);
+  --crit-vis-org-fg:         #85aaf8;
+  --crit-vis-unlisted-bg:    rgba(255, 158, 100, 0.10);
+  --crit-vis-unlisted-fg:    #ff9e64;
+  --crit-vis-public-bg:      rgba(86, 211, 100, 0.10);
+  --crit-vis-public-fg:      #56d364;
+
+  /* ---- Story mode (dark) ---- */
+  --crit-story-chapter-bg:      var(--crit-bg-card);
+  --crit-story-accent:          var(--crit-brand);
+  --crit-story-num-bg:          var(--crit-brand-bg);
+  --crit-story-support-fg:      var(--crit-fg-muted);
+  /* Linear-style opacity surfaces: tints of one neutral, layered by elevation. */
+  --crit-l-surface:         rgba(255, 255, 255, 0.018);
+  --crit-l-surface-2:       rgba(255, 255, 255, 0.035);
+  --crit-l-hover:           rgba(255, 255, 255, 0.05);
+  --crit-l-active:          rgba(133, 170, 248, 0.10);
+  --crit-l-hairline:        rgba(255, 255, 255, 0.06);
+  --crit-l-hairline-strong: rgba(255, 255, 255, 0.10);
+}
+
+/* ===== System preference: light ===== */
+@media (prefers-color-scheme: light) {
+  html:not([data-theme]) {
+    /* ---- Brand surfaces ---- */
+    --crit-bg-page:     #ffffff;
+    --crit-bg-card:     #f6f8fa;
+    --crit-bg-elevated: #eff2f5;
+
+    /* ---- Brand foreground ---- */
+    --crit-fg-primary:   #1a1d23;
+    --crit-fg-secondary: #57606a;
+    --crit-fg-muted:     #8892a6;
+    --crit-fg-on-brand:  #ffffff;
+
+    /* ---- Brand colors ---- */
+    --crit-brand:         #2960bc;
+    --crit-brand-hover:   #396ec6;
+    --crit-brand-subtle:  rgba(41,96,188,0.08);
+    --crit-brand-bg:      rgba(41,96,188,0.12);
+    --crit-line-focus-bg: rgba(41,96,188,0.10);
+    --crit-brand-cta:       #3a72d4;
+    --crit-brand-cta-hover: #3568c8;
+
+    /* ---- Header pill tokens (neutral chip palette) ---- */
+    --crit-pill-bg:        #f6f8fa;
+    --crit-pill-bg-hover:  #eef1f4;
+    --crit-pill-fg:        #1f2328;
+    --crit-pill-fg-muted:  #59636e;
+    --crit-pill-border:    #d0d7de;
+    --crit-rail-fg:        #59636e;
+    --crit-rail-arrow:     #8b949e;
+
+    /* ---- Editor surfaces (light) ---- */
+    --crit-editor-bg:          #ffffff;
+    --crit-editor-bg-card:     #f6f8fa;
+    --crit-editor-bg-elevated: #eff2f5;
+    --crit-editor-bg-hover:    #eff2f5;
+    --crit-editor-bg-gutter:   #f6f8fa;
+    --crit-editor-code-bg:     #eff1f3;
+    --crit-editor-comment-bg:  #ddf4ff;
+
+    /* ---- Editor foreground (light) ---- */
+    --crit-editor-fg:           #1f2328;
+    --crit-editor-fg-secondary: #59636e;
+    --crit-editor-fg-muted:     #59636e;
+
+    /* ---- Editor scrollbar (light) ---- */
+    --crit-editor-scrollbar-bg:    #ffffff;
+    --crit-editor-scrollbar-thumb: #d1d9e0;
+
+    /* ---- Semantic colors ---- */
+    --crit-green:  #166f30;
+    --crit-red:    #c41f2a;
+    --crit-orange: #bc4c00;
+    --crit-yellow: #7a5800;
+    --crit-purple: #8250df;
+    /* Visual line mode cursor accent. Saturated amber tuned to read on
+       light backgrounds (the muddy --crit-yellow #7a5800 looks olive at 3px). */
+    --crit-visual-accent: #b8860b;
+
+    /* ---- Borders ---- */
+    --crit-border:         #d8dee4;
+    --crit-border-strong:  #bac3cf;
+    --crit-border-comment: #0969da;
+
+    --crit-shadow: 0 2px 8px rgba(0,0,0,0.08);
+
+    /* ---- Diff highlights (light) ---- */
+    --crit-diff-add-bg:       #dafbe1;
+    --crit-diff-add-line-bg:  #dafbe1;
+    --crit-diff-del-bg:       #ffebe9;
+    --crit-diff-del-line-bg:  #ffebe9;
+    --crit-diff-add-gutter:   #aceebb;
+    --crit-diff-del-gutter:   #ffcecb;
+    --crit-diff-word-add-bg:  #aceebb;
+    --crit-diff-word-del-bg:  #ffcecb;
+
+    --crit-comment-range-bg: rgba(210, 153, 34, 0.15);
+    --crit-table-stripe: rgba(0, 0, 0, 0.02);
+    --crit-blockquote-border: #0969da;
+    --crit-blockquote-bg:     rgba(9, 105, 218, 0.04);
+
+    --crit-badge-resolved-bg:  rgba(22, 111, 48, 0.1);
+    --crit-badge-modified-bg:  rgba(122, 88, 0, 0.08);
+    --crit-badge-deleted-bg:   rgba(196, 31, 42, 0.05);
+    --crit-badge-removed-bg:   rgba(100, 100, 100, 0.08);
+    --crit-badge-removed-color: var(--crit-editor-fg-secondary);
+    --crit-badge-removed-border: color-mix(in srgb, var(--crit-editor-fg-secondary) 15%, transparent);
+    --crit-live-badge-bg:      rgba(22, 111, 48, 0.08);
+
+    --crit-yellow-subtle: rgba(122, 88, 0, 0.06);
+    --crit-yellow-bg:     rgba(122, 88, 0, 0.1);
+    --crit-yellow-border: rgba(122, 88, 0, 0.16);
+
+    /* ---- Drifted comment ---- */
+    --crit-drift-badge-fg:     #8a5200;
+    --crit-drift-badge-bg:     rgba(138, 82, 0, 0.09);
+    --crit-drift-badge-border: rgba(138, 82, 0, 0.22);
+
+    --crit-drift-card-border:  rgba(138, 82, 0, 0.20);
+
+    /* ---- Green subtle ---- */
+    --crit-green-subtle: rgba(22, 111, 48, 0.08);
+
+    /* ---- Finish/disconnected state ---- */
+    --crit-finish-pill-bg:     rgba(22, 127, 48, 0.08);
+    --crit-finish-pill-border: rgba(22, 127, 48, 0.18);
+    --crit-finish-pill-fg:     #167f30;
+    --crit-finish-body-fg:     #5a6275;
+
+    --crit-overlay-bg:       rgba(0,0,0,0.5);
+    --crit-btn-danger-hover-bg:  rgba(196, 31, 42, 0.08);
+    --crit-toast-error-bg:       rgba(196, 31, 42, 0.1);
+    --crit-toast-ghost-hover-bg: rgba(0,0,0,0.04);
+    --crit-btn-success-border:   rgba(22, 111, 48, 0.3);
+    --crit-btn-success-hover-bg: rgba(22, 111, 48, 0.06);
+    --crit-share-confirm-bg:     rgba(196, 31, 42, 0.06);
+    --crit-share-confirm-border: rgba(196, 31, 42, 0.12);
+    --crit-change-flash-bg:      rgba(188, 76, 0, 0.12);
+    --crit-resolve-hover-bg:     rgba(22, 111, 48, 0.08);
+    --crit-quote-highlight-bg:     rgba(250, 200, 60, 0.18);
+    --crit-quote-highlight-border: rgba(200, 160, 30, 0.45);
+    --crit-qr-bg: #fff;
+
+    /* ---- Comment reference chip ---- */
+    --crit-comment-ref-color:       #0550ae;
+    --crit-comment-ref-color-hover: #033d8b;
+    --crit-comment-ref-underline:   rgba(5, 80, 174, 0.50);
+    --crit-comment-ref-flash-bg:    rgba(255, 212, 59, 0.55);
+    --crit-comment-ref-flash-ring:  rgba(154, 103, 0, 0.70);
+
+    --author-0-bg: rgba(26,95,160,0.10);
+    --author-0-border: rgba(26,95,160,0.25);
+    --author-0-fg: #1a5fa0;
+    --author-1-bg: rgba(179,46,46,0.10);
+    --author-1-border: rgba(179,46,46,0.25);
+    --author-1-fg: #b32e2e;
+    --author-2-bg: rgba(26,117,53,0.10);
+    --author-2-border: rgba(26,117,53,0.25);
+    --author-2-fg: #1a7535;
+    --author-3-bg: rgba(138,93,0,0.10);
+    --author-3-border: rgba(138,93,0,0.25);
+    --author-3-fg: #8a5d00;
+    --author-4-bg: rgba(112,48,165,0.10);
+    --author-4-border: rgba(112,48,165,0.25);
+    --author-4-fg: #7030a5;
+    --author-5-bg: rgba(14,110,110,0.10);
+    --author-5-border: rgba(14,110,110,0.25);
+    --author-5-fg: #0e6e6e;
+
+    /* ---- Live-mode chrome (R2: only iframe pane tokens; markers in Phase D) ---- */
+    --crit-live-iframe-frame: #d0d7de;
+    --crit-live-iframe-bg:    #f6f8fa;
+
+    /* ---- Phase C: composer, ancestor menu, mode toggle, toast ---- */
+    --crit-live-composer-bg:           #ffffff;
+    --crit-live-composer-border:       #d0d7de;
+    --crit-live-composer-input-bg:     #f6f8fa;
+    --crit-live-composer-error-fg:     #cf222e;
+    --crit-live-ancestor-menu-bg:      #ffffff;
+    --crit-live-ancestor-menu-fg:      #1f2328;
+    --crit-live-ancestor-menu-hover-bg:#eef2f7;
+    --crit-live-toast-bg:              #ffffff;
+    --crit-live-toast-fg:              #1f2328;
+    --crit-live-toast-border:          #d0d7de;
+
+    /* ---- Phase D: markers + drifted tray + re-anchor ---- */
+    --crit-live-marker-bg:             #2563eb;
+    --crit-live-marker-fg:             #ffffff;
+    --crit-live-marker-border:         rgba(0,0,0,0.15);
+    --crit-live-marker-shadow:         0 1px 2px rgba(0,0,0,0.25);
+    --crit-live-marker-focus-ring:     #b45309;
+    --crit-live-reanchor-active-outline: #d97706;
+
+    /* ---- Phase E ---- */
+    --crit-live-focus-ring:             #b45309;
+    --crit-live-tooltip-bg:             #1a1d23;
+    --crit-live-tooltip-fg:             #ffffff;
+    --crit-live-tooltip-border:         rgba(0,0,0,0.15);
+    --crit-live-marker-flash-bg:        rgba(217, 119, 6, 0.6);
+    --crit-live-menu-highlight-bg:      #e0e7ff;
+    --crit-live-menu-highlight-fg:      #1a1d23;
+
+    /* ---- Org share modal ---- */
+    --crit-option-hover:       rgba(61, 106, 224, 0.04);
+    --crit-option-selected-bg: rgba(61, 106, 224, 0.06);
+    --crit-focus-ring:         rgba(61, 106, 224, 0.4);
+    --crit-green-hover:        #178a33;
+    --crit-vis-org-bg:         rgba(61, 106, 224, 0.08);
+    --crit-vis-org-fg:         #3d6ae0;
+    --crit-vis-unlisted-bg:    rgba(214, 122, 44, 0.08);
+    --crit-vis-unlisted-fg:    #d67a2c;
+    --crit-vis-public-bg:      rgba(26, 157, 59, 0.08);
+    --crit-vis-public-fg:      #1a9d3b;
+
+    /* ---- Story mode (light) ---- */
+    --crit-story-chapter-bg:      var(--crit-bg-card);
+    --crit-story-accent:          var(--crit-brand);
+    --crit-story-num-bg:          var(--crit-brand-bg);
+    --crit-story-support-fg:      var(--crit-fg-muted);
+    --crit-l-surface:         rgba(0, 0, 0, 0.015);
+    --crit-l-surface-2:       rgba(0, 0, 0, 0.03);
+    --crit-l-hover:           rgba(0, 0, 0, 0.045);
+    --crit-l-active:          rgba(41, 96, 188, 0.08);
+    --crit-l-hairline:        rgba(0, 0, 0, 0.07);
+    --crit-l-hairline-strong: rgba(0, 0, 0, 0.12);
+
+    /* ---- Icons (SVG masks) ---- */
+    --crit-icon-github: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='currentColor'%3E%3Cpath d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0016 8c0-4.42-3.58-8-8-8z'/%3E%3C/svg%3E");
+  }
+}
+
+/* ===== Dark (explicit) ===== */
+[data-theme="dark"] {
+  /* ---- Brand surfaces ---- */
+  --crit-bg-page:     #0e0f13;
+  --crit-bg-card:     #171922;
+  --crit-bg-elevated: #242835;
+
+  /* ---- Brand foreground ---- */
+  --crit-fg-primary:   #e8ebf5;
+  --crit-fg-secondary: #9ba3bf;
+  --crit-fg-muted:     #646c85;
+  --crit-fg-on-brand:  #ffffff;
+
+  /* ---- Brand colors ---- */
+  --crit-brand:         #85aaf8;
+  --crit-brand-hover:   #94bcfb;
+  --crit-brand-subtle:  rgba(133, 170, 248, 0.10);
+  --crit-brand-bg:      rgba(133, 170, 248, 0.15);
+  --crit-line-focus-bg: rgba(133, 170, 248, 0.10);
+  --crit-brand-cta:       #406fcc;
+  --crit-brand-cta-hover: #4574cc;
+
+  /* ---- Header pill tokens (neutral chip palette) ---- */
+  --crit-pill-bg:        #21262d;
+  --crit-pill-bg-hover:  #2a3038;
+  --crit-pill-fg:        #c9d1d9;
+  --crit-pill-fg-muted:  #8b949e;
+  --crit-pill-border:    #30363d;
+  --crit-rail-fg:        #7d8590;
+  --crit-rail-arrow:     #6e7681;
+
+  /* ---- Editor surfaces (Tokyo Night) ---- */
+  --crit-editor-bg:          #1a1b26;
+  --crit-editor-bg-card:     #16171f;
+  --crit-editor-bg-elevated: #262940;
+  --crit-editor-bg-hover:    #2d3150;
+  --crit-editor-bg-gutter:   #131420;
+  --crit-editor-code-bg:     #1e2030;
+  --crit-editor-comment-bg:  #1a1f36;
+
+  /* ---- Editor foreground ---- */
+  --crit-editor-fg:           #c0caf5;
+  --crit-editor-fg-secondary: #a9b1d6;
+  --crit-editor-fg-muted:     #9aa1c8;
+
+  /* ---- Editor scrollbar ---- */
+  --crit-editor-scrollbar-bg:    #1a1b26;
+  --crit-editor-scrollbar-thumb: #3b4261;
+
+  /* ---- Semantic colors ---- */
+  --crit-green:  #56d364;
+  --crit-red:    #f7768e;
+  --crit-orange: #ff9e64;
+  --crit-yellow: #e0af68;
+  --crit-purple: #a371f7;
+  /* Visual line mode cursor accent. Distinct from --crit-orange (modified
+     line indicator) and --crit-yellow (warning / modified badges). */
+  --crit-visual-accent: #e0af68;
+
+  /* ---- Borders ---- */
+  --crit-border:         #232632;
+  --crit-border-strong:  #2f3342;
+  --crit-border-comment: #3d59a1;
+
+  --crit-shadow: 0 2px 8px rgba(0,0,0,0.3);
+
+  /* ---- Diff highlights ---- */
+  --crit-diff-add-bg:       rgba(86, 211, 100, 0.08);
+  --crit-diff-add-line-bg:  rgba(86, 211, 100, 0.18);
+  --crit-diff-del-bg:       rgba(247, 118, 142, 0.06);
+  --crit-diff-del-line-bg:  rgba(247, 118, 142, 0.14);
+  --crit-diff-add-gutter:   rgba(86, 211, 100, 0.12);
+  --crit-diff-del-gutter:   rgba(247, 118, 142, 0.08);
+  --crit-diff-word-add-bg:  rgba(63, 185, 80, 0.18);
+  --crit-diff-word-del-bg:  rgba(248, 81, 73, 0.18);
+
+  --crit-comment-range-bg: rgba(210, 153, 34, 0.13);
+  --crit-table-stripe: rgba(133, 170, 248, 0.04);
+  --crit-blockquote-border: #3d59a1;
+  --crit-blockquote-bg:     rgba(61, 89, 161, 0.08);
+
+  --crit-badge-resolved-bg:  rgba(86, 211, 100, 0.12);
+  --crit-badge-modified-bg:  rgba(224, 175, 104, 0.12);
+  --crit-badge-deleted-bg:   rgba(247, 118, 142, 0.10);
+  --crit-badge-removed-bg:   rgba(169, 177, 214, 0.12);
+  --crit-badge-removed-color: var(--crit-editor-fg-secondary);
+  --crit-badge-removed-border: color-mix(in srgb, var(--crit-editor-fg-secondary) 20%, transparent);
+  --crit-live-badge-bg:      rgba(52, 211, 153, 0.1);
+
+  --crit-yellow-subtle: rgba(224, 175, 104, 0.08);
+  --crit-yellow-bg:     rgba(224, 175, 104, 0.14);
+  --crit-yellow-border: rgba(224, 175, 104, 0.2);
+
+  /* ---- Drifted comment ---- */
+  --crit-drift-badge-fg:     #f0a030;
+  --crit-drift-badge-bg:     rgba(240, 160, 48, 0.14);
+  --crit-drift-badge-border: rgba(240, 160, 48, 0.30);
+
+  --crit-drift-card-border:  rgba(240, 160, 48, 0.25);
+
+  /* ---- Green subtle ---- */
+  --crit-green-subtle: rgba(86, 211, 100, 0.10);
+
+  /* ---- Finish/disconnected state ---- */
+  --crit-finish-pill-bg:     rgba(86, 211, 100, 0.10);
+  --crit-finish-pill-border: rgba(86, 211, 100, 0.20);
+  --crit-finish-pill-fg:     #56d364;
+  --crit-finish-body-fg:     #9ba3bf;
+
+  --crit-overlay-bg:       rgba(0,0,0,0.5);
+  --crit-btn-danger-hover-bg:  rgba(247, 118, 142, 0.1);
+  --crit-toast-error-bg:       rgba(247, 118, 142, 0.14);
+  --crit-toast-ghost-hover-bg: rgba(255,255,255,0.06);
+  --crit-btn-success-border:   rgba(86, 211, 100, 0.35);
+  --crit-btn-success-hover-bg: rgba(86, 211, 100, 0.08);
+  --crit-share-confirm-bg:     rgba(247, 118, 142, 0.08);
+  --crit-share-confirm-border: rgba(247, 118, 142, 0.15);
+  --crit-change-flash-bg:      rgba(255, 158, 100, 0.15);
+  --crit-resolve-hover-bg:     rgba(86, 211, 100, 0.1);
+  --crit-quote-highlight-bg:     rgba(250, 200, 60, 0.12);
+  --crit-quote-highlight-border: rgba(250, 200, 60, 0.4);
+  --crit-qr-bg: #fff;
+
+  /* ---- Comment reference chip ---- */
+  --crit-comment-ref-color:       #85aaf8;
+  --crit-comment-ref-color-hover: #94bcfb;
+  --crit-comment-ref-underline:   rgba(133, 170, 248, 0.35);
+  --crit-comment-ref-flash-bg:    rgba(187, 128, 9, 0.35);
+  --crit-comment-ref-flash-ring:  rgba(187, 128, 9, 0.85);
+
+  --author-0-bg: rgba(110,160,230,0.15);
+  --author-0-border: rgba(110,160,230,0.35);
+  --author-0-fg: #7ab0f0;
+  --author-1-bg: rgba(225,95,95,0.15);
+  --author-1-border: rgba(225,95,95,0.35);
+  --author-1-fg: #e87070;
+  --author-2-bg: rgba(90,190,115,0.15);
+  --author-2-border: rgba(90,190,115,0.35);
+  --author-2-fg: #6cc880;
+  --author-3-bg: rgba(215,175,70,0.15);
+  --author-3-border: rgba(215,175,70,0.35);
+  --author-3-fg: #d9b458;
+  --author-4-bg: rgba(165,105,220,0.15);
+  --author-4-border: rgba(165,105,220,0.35);
+  --author-4-fg: #b580e0;
+  --author-5-bg: rgba(85,200,200,0.15);
+  --author-5-border: rgba(85,200,200,0.35);
+  --author-5-fg: #60d0d0;
+
+  /* ---- Live-mode chrome (R2: only iframe pane tokens; markers in Phase D) ---- */
+  --crit-live-iframe-frame: #2f3342;
+  --crit-live-iframe-bg:    #0e0f13;
+
+  /* ---- Phase C: composer, ancestor menu, mode toggle, toast ---- */
+  --crit-live-composer-bg:           #1a1c23;
+  --crit-live-composer-border:       #2f3342;
+  --crit-live-composer-input-bg:     #0e0f13;
+  --crit-live-composer-error-fg:     #f85149;
+  --crit-live-ancestor-menu-bg:      #1a1c23;
+  --crit-live-ancestor-menu-fg:      #e6e8ed;
+  --crit-live-ancestor-menu-hover-bg:#2f3342;
+  --crit-live-toast-bg:              #1a1c23;
+  --crit-live-toast-fg:              #e6e8ed;
+  --crit-live-toast-border:          #2f3342;
+
+  /* ---- Phase D: markers + drifted tray + re-anchor ---- */
+  --crit-live-marker-bg:             #3b82f6;
+  --crit-live-marker-fg:             #ffffff;
+  --crit-live-marker-border:         rgba(255,255,255,0.18);
+  --crit-live-marker-shadow:         0 1px 3px rgba(0,0,0,0.5);
+  --crit-live-marker-focus-ring:     #fbbf24;
+  --crit-live-reanchor-active-outline: #f59e0b;
+
+  /* ---- Phase E ---- */
+  --crit-live-focus-ring:             #fbbf24;
+  --crit-live-tooltip-bg:             #1c1f29;
+  --crit-live-tooltip-fg:             #e6e8ef;
+  --crit-live-tooltip-border:         #2f3342;
+  --crit-live-marker-flash-bg:        rgba(245, 158, 11, 0.7);
+  --crit-live-menu-highlight-bg:      rgba(59, 130, 246, 0.18);
+  --crit-live-menu-highlight-fg:      #e6e8ef;
+
+  /* ---- Org share modal ---- */
+  --crit-option-hover:       rgba(133, 170, 248, 0.06);
+  --crit-option-selected-bg: rgba(133, 170, 248, 0.08);
+  --crit-focus-ring:         rgba(133, 170, 248, 0.5);
+  --crit-green-hover:        #6ade7a;
+  --crit-vis-org-bg:         rgba(133, 170, 248, 0.10);
+  --crit-vis-org-fg:         #85aaf8;
+  --crit-vis-unlisted-bg:    rgba(255, 158, 100, 0.10);
+  --crit-vis-unlisted-fg:    #ff9e64;
+  --crit-vis-public-bg:      rgba(86, 211, 100, 0.10);
+  --crit-vis-public-fg:      #56d364;
+
+  /* ---- Story mode (dark) ---- */
+  --crit-story-chapter-bg:      var(--crit-bg-card);
+  --crit-story-accent:          var(--crit-brand);
+  --crit-story-num-bg:          var(--crit-brand-bg);
+  --crit-story-support-fg:      var(--crit-fg-muted);
+  --crit-l-surface:         rgba(255, 255, 255, 0.018);
+  --crit-l-surface-2:       rgba(255, 255, 255, 0.035);
+  --crit-l-hover:           rgba(255, 255, 255, 0.05);
+  --crit-l-active:          rgba(133, 170, 248, 0.10);
+  --crit-l-hairline:        rgba(255, 255, 255, 0.06);
+  --crit-l-hairline-strong: rgba(255, 255, 255, 0.10);
+
+  /* ---- Icons (SVG masks) ---- */
+  --crit-icon-github: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='currentColor'%3E%3Cpath d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0016 8c0-4.42-3.58-8-8-8z'/%3E%3C/svg%3E");
+}
+
+/* ===== Light (explicit) ===== */
+[data-theme="light"] {
+  /* ---- Brand surfaces ---- */
+  --crit-bg-page:     #ffffff;
+  --crit-bg-card:     #f6f8fa;
+  --crit-bg-elevated: #eff2f5;
+
+  /* ---- Brand foreground ---- */
+  --crit-fg-primary:   #1a1d23;
+  --crit-fg-secondary: #57606a;
+  --crit-fg-muted:     #8892a6;
+  --crit-fg-on-brand:  #ffffff;
+
+  /* ---- Brand colors ---- */
+  --crit-brand:         #2960bc;
+  --crit-brand-hover:   #396ec6;
+  --crit-brand-subtle:  rgba(41,96,188,0.08);
+  --crit-brand-bg:      rgba(41,96,188,0.12);
+  --crit-line-focus-bg: rgba(41,96,188,0.10);
+  --crit-brand-cta:       #3a72d4;
+  --crit-brand-cta-hover: #3568c8;
+
+  /* ---- Header pill tokens (neutral chip palette) ---- */
+  --crit-pill-bg:        #f6f8fa;
+  --crit-pill-bg-hover:  #eef1f4;
+  --crit-pill-fg:        #1f2328;
+  --crit-pill-fg-muted:  #59636e;
+  --crit-pill-border:    #d0d7de;
+  --crit-rail-fg:        #59636e;
+  --crit-rail-arrow:     #8b949e;
+
+  /* ---- Editor surfaces (light) ---- */
+  --crit-editor-bg:          #ffffff;
+  --crit-editor-bg-card:     #f6f8fa;
+  --crit-editor-bg-elevated: #eff2f5;
+  --crit-editor-bg-hover:    #eff2f5;
+  --crit-editor-bg-gutter:   #f6f8fa;
+  --crit-editor-code-bg:     #eff1f3;
+  --crit-editor-comment-bg:  #ddf4ff;
+
+  /* ---- Editor foreground (light) ---- */
+  --crit-editor-fg:           #1f2328;
+  --crit-editor-fg-secondary: #59636e;
+  --crit-editor-fg-muted:     #59636e;
+
+  /* ---- Editor scrollbar (light) ---- */
+  --crit-editor-scrollbar-bg:    #ffffff;
+  --crit-editor-scrollbar-thumb: #d1d9e0;
+
+  /* ---- Semantic colors ---- */
+  --crit-green:  #166f30;
+  --crit-red:    #c41f2a;
+  --crit-orange: #bc4c00;
+  --crit-yellow: #7a5800;
+  --crit-purple: #8250df;
+  /* Visual line mode cursor accent. Saturated amber tuned to read on
+     light backgrounds (the muddy --crit-yellow #7a5800 looks olive at 3px). */
+  --crit-visual-accent: #b8860b;
+
+  /* ---- Borders ---- */
+  --crit-border:         #d8dee4;
+  --crit-border-strong:  #bac3cf;
+  --crit-border-comment: #0969da;
+
+  --crit-shadow: 0 2px 8px rgba(0,0,0,0.08);
+
+  /* ---- Diff highlights (light) ---- */
+  --crit-diff-add-bg:       #dafbe1;
+  --crit-diff-add-line-bg:  #dafbe1;
+  --crit-diff-del-bg:       #ffebe9;
+  --crit-diff-del-line-bg:  #ffebe9;
+  --crit-diff-add-gutter:   #aceebb;
+  --crit-diff-del-gutter:   #ffcecb;
+  --crit-diff-word-add-bg:  #aceebb;
+  --crit-diff-word-del-bg:  #ffcecb;
+
+  --crit-comment-range-bg: rgba(210, 153, 34, 0.15);
+  --crit-table-stripe: rgba(0, 0, 0, 0.02);
+  --crit-blockquote-border: #0969da;
+  --crit-blockquote-bg:     rgba(9, 105, 218, 0.04);
+
+  --crit-badge-resolved-bg:  rgba(22, 111, 48, 0.1);
+  --crit-badge-modified-bg:  rgba(122, 88, 0, 0.08);
+  --crit-badge-deleted-bg:   rgba(196, 31, 42, 0.05);
+  --crit-badge-removed-bg:   rgba(100, 100, 100, 0.08);
+  --crit-badge-removed-color: var(--crit-editor-fg-secondary);
+  --crit-badge-removed-border: color-mix(in srgb, var(--crit-editor-fg-secondary) 15%, transparent);
+  --crit-live-badge-bg:      rgba(22, 111, 48, 0.08);
+
+  --crit-yellow-subtle: rgba(122, 88, 0, 0.06);
+  --crit-yellow-bg:     rgba(122, 88, 0, 0.1);
+  --crit-yellow-border: rgba(122, 88, 0, 0.16);
+
+  /* ---- Drifted comment ---- */
+  --crit-drift-badge-fg:     #8a5200;
+  --crit-drift-badge-bg:     rgba(138, 82, 0, 0.09);
+  --crit-drift-badge-border: rgba(138, 82, 0, 0.22);
+  --crit-drift-card-border:  rgba(138, 82, 0, 0.20);
+
+  /* ---- Green subtle ---- */
+  --crit-green-subtle: rgba(22, 111, 48, 0.08);
+
+  /* ---- Finish/disconnected state ---- */
+  --crit-finish-pill-bg:     rgba(22, 127, 48, 0.08);
+  --crit-finish-pill-border: rgba(22, 127, 48, 0.18);
+  --crit-finish-pill-fg:     #167f30;
+  --crit-finish-body-fg:     #5a6275;
+
+  --crit-overlay-bg:       rgba(0,0,0,0.5);
+  --crit-btn-danger-hover-bg:  rgba(196, 31, 42, 0.08);
+  --crit-toast-error-bg:       rgba(196, 31, 42, 0.1);
+  --crit-toast-ghost-hover-bg: rgba(0,0,0,0.04);
+  --crit-btn-success-border:   rgba(22, 111, 48, 0.3);
+  --crit-btn-success-hover-bg: rgba(22, 111, 48, 0.06);
+  --crit-share-confirm-bg:     rgba(196, 31, 42, 0.06);
+  --crit-share-confirm-border: rgba(196, 31, 42, 0.12);
+  --crit-change-flash-bg:      rgba(188, 76, 0, 0.12);
+  --crit-resolve-hover-bg:     rgba(22, 111, 48, 0.08);
+  --crit-quote-highlight-bg:     rgba(250, 200, 60, 0.18);
+  --crit-quote-highlight-border: rgba(200, 160, 30, 0.45);
+  --crit-qr-bg: #fff;
+
+  /* ---- Comment reference chip ---- */
+  --crit-comment-ref-color:       #0550ae;
+  --crit-comment-ref-color-hover: #033d8b;
+  --crit-comment-ref-underline:   rgba(5, 80, 174, 0.50);
+  --crit-comment-ref-flash-bg:    rgba(255, 212, 59, 0.55);
+  --crit-comment-ref-flash-ring:  rgba(154, 103, 0, 0.70);
+
+  --author-0-bg: rgba(26,95,160,0.10);
+  --author-0-border: rgba(26,95,160,0.25);
+  --author-0-fg: #1a5fa0;
+  --author-1-bg: rgba(179,46,46,0.10);
+  --author-1-border: rgba(179,46,46,0.25);
+  --author-1-fg: #b32e2e;
+  --author-2-bg: rgba(26,117,53,0.10);
+  --author-2-border: rgba(26,117,53,0.25);
+  --author-2-fg: #1a7535;
+  --author-3-bg: rgba(138,93,0,0.10);
+  --author-3-border: rgba(138,93,0,0.25);
+  --author-3-fg: #8a5d00;
+  --author-4-bg: rgba(112,48,165,0.10);
+  --author-4-border: rgba(112,48,165,0.25);
+  --author-4-fg: #7030a5;
+  --author-5-bg: rgba(14,110,110,0.10);
+  --author-5-border: rgba(14,110,110,0.25);
+  --author-5-fg: #0e6e6e;
+
+  /* ---- Live-mode chrome (R2: only iframe pane tokens; markers in Phase D) ---- */
+  --crit-live-iframe-frame: #d0d7de;
+  --crit-live-iframe-bg:    #f6f8fa;
+
+  /* ---- Phase C: composer, ancestor menu, mode toggle, toast ---- */
+  --crit-live-composer-bg:           #ffffff;
+  --crit-live-composer-border:       #d0d7de;
+  --crit-live-composer-input-bg:     #f6f8fa;
+  --crit-live-composer-error-fg:     #cf222e;
+  --crit-live-ancestor-menu-bg:      #ffffff;
+  --crit-live-ancestor-menu-fg:      #1f2328;
+  --crit-live-ancestor-menu-hover-bg:#eef2f7;
+  --crit-live-toast-bg:              #ffffff;
+  --crit-live-toast-fg:              #1f2328;
+  --crit-live-toast-border:          #d0d7de;
+
+  /* ---- Phase D: markers + drifted tray + re-anchor ---- */
+  --crit-live-marker-bg:             #2563eb;
+  --crit-live-marker-fg:             #ffffff;
+  --crit-live-marker-border:         rgba(0,0,0,0.15);
+  --crit-live-marker-shadow:         0 1px 2px rgba(0,0,0,0.25);
+  --crit-live-marker-focus-ring:     #b45309;
+  --crit-live-reanchor-active-outline: #d97706;
+
+  /* ---- Phase E ---- */
+  --crit-live-focus-ring:             #b45309;
+  --crit-live-tooltip-bg:             #1a1d23;
+  --crit-live-tooltip-fg:             #ffffff;
+  --crit-live-tooltip-border:         rgba(0,0,0,0.15);
+  --crit-live-marker-flash-bg:        rgba(217, 119, 6, 0.6);
+  --crit-live-menu-highlight-bg:      #e0e7ff;
+  --crit-live-menu-highlight-fg:      #1a1d23;
+
+  /* ---- Org share modal ---- */
+  --crit-option-hover:       rgba(61, 106, 224, 0.04);
+  --crit-option-selected-bg: rgba(61, 106, 224, 0.06);
+  --crit-focus-ring:         rgba(61, 106, 224, 0.4);
+  --crit-green-hover:        #178a33;
+  --crit-vis-org-bg:         rgba(61, 106, 224, 0.08);
+  --crit-vis-org-fg:         #3d6ae0;
+  --crit-vis-unlisted-bg:    rgba(214, 122, 44, 0.08);
+  --crit-vis-unlisted-fg:    #d67a2c;
+  --crit-vis-public-bg:      rgba(26, 157, 59, 0.08);
+  --crit-vis-public-fg:      #1a9d3b;
+
+  /* ---- Story mode (light) ---- */
+  --crit-story-chapter-bg:      var(--crit-bg-card);
+  --crit-story-accent:          var(--crit-brand);
+  --crit-story-num-bg:          var(--crit-brand-bg);
+  --crit-story-support-fg:      var(--crit-fg-muted);
+  --crit-l-surface:         rgba(0, 0, 0, 0.015);
+  --crit-l-surface-2:       rgba(0, 0, 0, 0.03);
+  --crit-l-hover:           rgba(0, 0, 0, 0.045);
+  --crit-l-active:          rgba(41, 96, 188, 0.08);
+  --crit-l-hairline:        rgba(0, 0, 0, 0.07);
+  --crit-l-hairline-strong: rgba(0, 0, 0, 0.12);
+
+  /* ---- Icons (SVG masks) ---- */
+  --crit-icon-github: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='currentColor'%3E%3Cpath d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0016 8c0-4.42-3.58-8-8-8z'/%3E%3C/svg%3E");
+}
+
+/* ===== highlight.js Dark Theme (Tokyo Night Dark) =====
+   Default (system dark) — applies when no data-theme is set */
+.hljs{color:#9aa5ce;background:#1a1b26}
+.hljs-tag,.hljs-doctag,.hljs-selector-id,.hljs-selector-class,.hljs-regexp,.hljs-template-tag,.hljs-selector-pseudo,.hljs-selector-attr,.hljs-variable.language_,.hljs-deletion{color:#f7768e}
+.hljs-variable,.hljs-template-variable,.hljs-number,.hljs-literal,.hljs-type,.hljs-params,.hljs-link{color:#ff9e64}
+.hljs-built_in,.hljs-attribute{color:#e0af68}
+.hljs-selector-tag{color:#73daca}
+.hljs-keyword,.hljs-title,.hljs-title.function_,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-subst,.hljs-property{color:#7dcfff}
+.hljs-quote,.hljs-string,.hljs-symbol,.hljs-bullet,.hljs-addition{color:#9ece6a}
+.hljs-code,.hljs-formula,.hljs-section{color:#85aaf8}
+.hljs-keyword,.hljs-operator,.hljs-attr,.hljs-name,.hljs-char.escape_{color:#bb9af7}
+.hljs-comment,.hljs-meta{color:#9aa1c8}
+.hljs-punctuation{color:#c0caf5}
+.hljs-emphasis{font-style:italic}
+.hljs-strong{font-weight:bold}
+.hljs-addition{color:#9ece6a;background-color:rgba(158,206,106,0.15)}
+.hljs-deletion{color:#f7768e;background-color:rgba(247,118,142,0.15)}
+
+/* Explicit dark override */
+[data-theme="dark"] .hljs{color:#9aa5ce;background:#1a1b26}
+[data-theme="dark"] .hljs-tag,[data-theme="dark"] .hljs-doctag,[data-theme="dark"] .hljs-selector-id,[data-theme="dark"] .hljs-selector-class,[data-theme="dark"] .hljs-regexp,[data-theme="dark"] .hljs-template-tag,[data-theme="dark"] .hljs-selector-pseudo,[data-theme="dark"] .hljs-selector-attr,[data-theme="dark"] .hljs-variable.language_,[data-theme="dark"] .hljs-deletion{color:#f7768e}
+[data-theme="dark"] .hljs-variable,[data-theme="dark"] .hljs-template-variable,[data-theme="dark"] .hljs-number,[data-theme="dark"] .hljs-literal,[data-theme="dark"] .hljs-type,[data-theme="dark"] .hljs-params,[data-theme="dark"] .hljs-link{color:#ff9e64}
+[data-theme="dark"] .hljs-built_in,[data-theme="dark"] .hljs-attribute{color:#e0af68}
+[data-theme="dark"] .hljs-selector-tag{color:#73daca}
+[data-theme="dark"] .hljs-keyword,[data-theme="dark"] .hljs-title,[data-theme="dark"] .hljs-title.function_,[data-theme="dark"] .hljs-title.class_,[data-theme="dark"] .hljs-title.class_.inherited__,[data-theme="dark"] .hljs-subst,[data-theme="dark"] .hljs-property{color:#7dcfff}
+[data-theme="dark"] .hljs-quote,[data-theme="dark"] .hljs-string,[data-theme="dark"] .hljs-symbol,[data-theme="dark"] .hljs-bullet,[data-theme="dark"] .hljs-addition{color:#9ece6a}
+[data-theme="dark"] .hljs-code,[data-theme="dark"] .hljs-formula,[data-theme="dark"] .hljs-section{color:#85aaf8}
+[data-theme="dark"] .hljs-keyword,[data-theme="dark"] .hljs-operator,[data-theme="dark"] .hljs-attr,[data-theme="dark"] .hljs-name,[data-theme="dark"] .hljs-char.escape_{color:#bb9af7}
+[data-theme="dark"] .hljs-comment,[data-theme="dark"] .hljs-meta{color:#9aa1c8}
+[data-theme="dark"] .hljs-punctuation{color:#c0caf5}
+[data-theme="dark"] .hljs-emphasis{font-style:italic}
+[data-theme="dark"] .hljs-strong{font-weight:bold}
+[data-theme="dark"] .hljs-addition{color:#9ece6a;background-color:rgba(158,206,106,0.15)}
+[data-theme="dark"] .hljs-deletion{color:#f7768e;background-color:rgba(247,118,142,0.15)}
+
+/* ===== highlight.js Light Theme (GitHub) ===== */
+/* System light — applies when OS prefers light and no data-theme is set */
+@media (prefers-color-scheme: light) {
+  html:not([data-theme]) .hljs{color:#24292e;background:#fff}
+  html:not([data-theme]) .hljs-doctag,html:not([data-theme]) .hljs-keyword,html:not([data-theme]) .hljs-meta .hljs-keyword,html:not([data-theme]) .hljs-template-tag,html:not([data-theme]) .hljs-template-variable,html:not([data-theme]) .hljs-type,html:not([data-theme]) .hljs-variable.language_,html:not([data-theme]) .hljs-tag{color:#cf222e}
+  html:not([data-theme]) .hljs-title,html:not([data-theme]) .hljs-title.class_,html:not([data-theme]) .hljs-title.class_.inherited__,html:not([data-theme]) .hljs-title.function_{color:#6f42c1}
+  html:not([data-theme]) .hljs-attr,html:not([data-theme]) .hljs-attribute,html:not([data-theme]) .hljs-literal,html:not([data-theme]) .hljs-meta,html:not([data-theme]) .hljs-number,html:not([data-theme]) .hljs-operator,html:not([data-theme]) .hljs-selector-attr,html:not([data-theme]) .hljs-selector-class,html:not([data-theme]) .hljs-selector-id,html:not([data-theme]) .hljs-variable,html:not([data-theme]) .hljs-params,html:not([data-theme]) .hljs-link,html:not([data-theme]) .hljs-property,html:not([data-theme]) .hljs-char.escape_{color:#005cc5}
+  html:not([data-theme]) .hljs-meta .hljs-string,html:not([data-theme]) .hljs-regexp,html:not([data-theme]) .hljs-string{color:#032f62}
+  html:not([data-theme]) .hljs-built_in,html:not([data-theme]) .hljs-symbol{color:#953800}
+  html:not([data-theme]) .hljs-code,html:not([data-theme]) .hljs-comment,html:not([data-theme]) .hljs-formula{color:#59636e}
+  html:not([data-theme]) .hljs-name,html:not([data-theme]) .hljs-quote,html:not([data-theme]) .hljs-selector-pseudo,html:not([data-theme]) .hljs-selector-tag{color:#22863a}
+  html:not([data-theme]) .hljs-subst{color:#24292e}
+  html:not([data-theme]) .hljs-section{color:#005cc5;font-weight:700}
+  html:not([data-theme]) .hljs-bullet{color:#735c0f}
+  html:not([data-theme]) .hljs-punctuation{color:#24292e}
+  html:not([data-theme]) .hljs-emphasis{color:#24292e;font-style:italic}
+  html:not([data-theme]) .hljs-strong{color:#24292e;font-weight:700}
+  html:not([data-theme]) .hljs-addition{color:#22863a;background-color:#f0fff4}
+  html:not([data-theme]) .hljs-deletion{color:#b31d28;background-color:#ffeef0}
+}
+
+/* Explicit light override */
+[data-theme="light"] .hljs{color:#24292e;background:#fff}
+[data-theme="light"] .hljs-doctag,[data-theme="light"] .hljs-keyword,[data-theme="light"] .hljs-meta .hljs-keyword,[data-theme="light"] .hljs-template-tag,[data-theme="light"] .hljs-template-variable,[data-theme="light"] .hljs-type,[data-theme="light"] .hljs-variable.language_,[data-theme="light"] .hljs-tag{color:#cf222e}
+[data-theme="light"] .hljs-title,[data-theme="light"] .hljs-title.class_,[data-theme="light"] .hljs-title.class_.inherited__,[data-theme="light"] .hljs-title.function_{color:#6f42c1}
+[data-theme="light"] .hljs-attr,[data-theme="light"] .hljs-attribute,[data-theme="light"] .hljs-literal,[data-theme="light"] .hljs-meta,[data-theme="light"] .hljs-number,[data-theme="light"] .hljs-operator,[data-theme="light"] .hljs-selector-attr,[data-theme="light"] .hljs-selector-class,[data-theme="light"] .hljs-selector-id,[data-theme="light"] .hljs-variable,[data-theme="light"] .hljs-params,[data-theme="light"] .hljs-link,[data-theme="light"] .hljs-property,[data-theme="light"] .hljs-char.escape_{color:#005cc5}
+[data-theme="light"] .hljs-meta .hljs-string,[data-theme="light"] .hljs-regexp,[data-theme="light"] .hljs-string{color:#032f62}
+[data-theme="light"] .hljs-built_in,[data-theme="light"] .hljs-symbol{color:#953800}
+[data-theme="light"] .hljs-code,[data-theme="light"] .hljs-comment,[data-theme="light"] .hljs-formula{color:#59636e}
+[data-theme="light"] .hljs-name,[data-theme="light"] .hljs-quote,[data-theme="light"] .hljs-selector-pseudo,[data-theme="light"] .hljs-selector-tag{color:#22863a}
+[data-theme="light"] .hljs-subst{color:#24292e}
+[data-theme="light"] .hljs-section{color:#005cc5;font-weight:700}
+[data-theme="light"] .hljs-bullet{color:#735c0f}
+[data-theme="light"] .hljs-punctuation{color:#24292e}
+[data-theme="light"] .hljs-emphasis{color:#24292e;font-style:italic}
+[data-theme="light"] .hljs-strong{color:#24292e;font-weight:700}
+[data-theme="light"] .hljs-addition{color:#22863a;background-color:#f0fff4}
+[data-theme="light"] .hljs-deletion{color:#b31d28;background-color:#ffeef0}
+
+/* ===== Light-theme AA contrast fixes for diff backgrounds =====
+   - Deletion-row gutter line numbers: --crit-editor-fg-muted on del-gutter bg fails AA.
+   - Word-level deletion span (.diff-word-del) inside hljs color classes: keyword/name/quote/comment fail AA.
+     DOM is .hljs-keyword > .diff-word-del — target the inner span.
+   - Whole-line addition rows: green hljs groups (name/quote/selector) fail AA on add-line bg.
+   All darken to --crit-editor-fg. */
+@media (prefers-color-scheme: light) {
+  html:not([data-theme]) .deletion .diff-gutter-num,
+  html:not([data-theme]) .hljs-doctag > .diff-word-del,
+  html:not([data-theme]) .hljs-keyword > .diff-word-del,
+  html:not([data-theme]) .hljs-template-tag > .diff-word-del,
+  html:not([data-theme]) .hljs-template-variable > .diff-word-del,
+  html:not([data-theme]) .hljs-type > .diff-word-del,
+  html:not([data-theme]) .hljs-variable > .diff-word-del,
+  html:not([data-theme]) .hljs-tag > .diff-word-del,
+  html:not([data-theme]) .hljs-name > .diff-word-del,
+  html:not([data-theme]) .hljs-quote > .diff-word-del,
+  html:not([data-theme]) .hljs-selector-pseudo > .diff-word-del,
+  html:not([data-theme]) .hljs-selector-tag > .diff-word-del,
+  html:not([data-theme]) .hljs-code > .diff-word-del,
+  html:not([data-theme]) .hljs-comment > .diff-word-del,
+  html:not([data-theme]) .hljs-formula > .diff-word-del,
+  html:not([data-theme]) .addition .hljs-name,
+  html:not([data-theme]) .addition .hljs-quote,
+  html:not([data-theme]) .addition .hljs-selector-pseudo,
+  html:not([data-theme]) .addition .hljs-selector-tag{color:var(--crit-editor-fg)}
+}
+[data-theme="light"] .deletion .diff-gutter-num,
+[data-theme="light"] .hljs-doctag > .diff-word-del,
+[data-theme="light"] .hljs-keyword > .diff-word-del,
+[data-theme="light"] .hljs-template-tag > .diff-word-del,
+[data-theme="light"] .hljs-template-variable > .diff-word-del,
+[data-theme="light"] .hljs-type > .diff-word-del,
+[data-theme="light"] .hljs-variable > .diff-word-del,
+[data-theme="light"] .hljs-tag > .diff-word-del,
+[data-theme="light"] .hljs-name > .diff-word-del,
+[data-theme="light"] .hljs-quote > .diff-word-del,
+[data-theme="light"] .hljs-selector-pseudo > .diff-word-del,
+[data-theme="light"] .hljs-selector-tag > .diff-word-del,
+[data-theme="light"] .hljs-code > .diff-word-del,
+[data-theme="light"] .hljs-comment > .diff-word-del,
+[data-theme="light"] .hljs-formula > .diff-word-del,
+[data-theme="light"] .addition .hljs-name,
+[data-theme="light"] .addition .hljs-quote,
+[data-theme="light"] .addition .hljs-selector-pseudo,
+[data-theme="light"] .addition .hljs-selector-tag{color:var(--crit-editor-fg)}

@@ -11,7 +11,7 @@
     "ci/hx-metrics.sh": "6d33e3ad2ea82dae390f46e86ce5fa4310e41b68b597d1286683a5b57bafe650",
     "ci/hx-reconcile.sh": "7e51ca050e6e4f81edfc6cad184049032aff05add5e059a41855c09f95263957",
     "ci/hx_hook_fields.py": "1185eeeeb77fdd21f0390f75a4bb14c68e5922782d37d12d8f1d5daf24f6e7df",
-    "ci/secret-allowlist.txt": "108023d6dbe60b96fbcc814df18be46662ffda0205861aad966a3ec563aa2137",
+    "ci/secret-allowlist.txt": "dbb48bea35570ecfd424e3a50e9172bd34d772ac17ed2f8b1813948814b905d1",
     "ci/secret-scan.py": "de984803af5b434e6a9ce69d30998bcdbe78b503a531fc600d260749872f4749",
     "ci/secret_patterns.py": "88ae630e3ba651a185979d973dbb98a177b1a03e40e27c7feae24a06f10839ef",
     "ci/skill-scan.py": "2d4c2eb2ebe57c9fff5383e23e8134962905fed31370f1e03b3e5dc099360379",
