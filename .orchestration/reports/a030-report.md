@@ -2,12 +2,12 @@
 
 ## Status
 
-- status: pr_open
+- status: ready_for_review
 - task: 第三者資産7件の無改変 vendor と登録台帳
 - ledger: `hx-ff8b32a66241252f92bdb6dca8bcb629`
-- branch: `a030/third-party-vendor`
-- commit: `a450e34`
-- PR: https://github.com/mryfmo/herness-self-improvement/pull/30
+- product PR: https://github.com/mryfmo/herness-self-improvement/pull/30
+- product merge: `5d4a9e68c8231b52e9980f393f93bd6d64fd90a6`
+- main CI: https://github.com/mryfmo/herness-self-improvement/actions/runs/29791931736
 
 ## Result
 
@@ -29,3 +29,7 @@ Codex native review の3指摘中、secret-scan evidence の追跡と既存 vend
 反映した。vendored agent instruction の自動発見リスクは、上流無改変と追加ファイル制約上
 rename せず、vendor 配下を workdir / skill source にしない運用境界と F7 再パッケージ要件を
 台帳に明記した。新たな実行配線は追加していない。
+
+GitHub Codex の唯一の inline 指摘は、amend 前の到達不能SHAをreportから除く要求だった。
+product merge SHAへ置換し、PR CI 2本とmain CIの成功を確認した。CodeRabbitはfile数上限で
+reviewをskipしたがstatusは成功で、actionable findingはなかった。
