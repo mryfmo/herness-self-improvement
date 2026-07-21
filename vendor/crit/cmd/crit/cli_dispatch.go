@@ -1,0 +1,232 @@
+package main
+
+import (
+	"fmt"
+	"os"
+	"strings"
+)
+
+// commandDispatch maps subcommand names to handler functions.
+var commandDispatch = map[string]func([]string){
+	"help":      func([]string) { printHelp() },
+	"--help":    func([]string) { printHelp() },
+	"-h":        func([]string) { printHelp() },
+	"--version": func([]string) { printVersion() },
+	"-v":        func([]string) { printVersion() },
+	"share":     runShare,
+	"fetch":     runFetch,
+	"unpublish": runUnpublish,
+	"install":   runInstall,
+	"config":    runConfig,
+	"check":     func([]string) { runCheck() },
+	"pr":        runPR,
+	"pull":      runPull,
+	"push":      runPush,
+	"comment":   runComment,
+	"comments":  runComments,
+	"review":    runReview,
+	"live":      runLive,
+	"preview":   runPreview,
+	"plan":      runPlan,
+	"plan-hook": runPlanHookCommand,
+	"story":     runStory,
+	"auth":      runAuth,
+	"stop":      runStop,
+	"status":    runStatus,
+	"stats":     runStats,
+	"cleanup":   runCleanup,
+	"_serve":    runServe,
+}
+
+func printHelp() {
+	fmt.Fprintf(os.Stderr, `crit — inline code review for AI agent workflows
+
+Getting started:
+  crit install <agent>                       Set up crit for your AI coding tool
+  crit                                       Review your current changes (auto-detects git)
+
+Review:
+  crit                                       Auto-detect changed files via git
+  crit <file|dir> [...]                      Review specific files or directories
+  crit live <url>                            Review a running web app in live mode
+  crit preview <file.html>                   Review a local HTML file in preview mode
+  crit --pr <num|url>                        Review a GitHub pull request
+  crit --range <base>..<head>                Review a commit range
+  crit plan --name <slug> <file>             Review a plan file
+  crit story                                 Generate and review a story-mode diff
+  crit --session <id>                        Reconnect to an existing review session
+
+Comments:
+  crit comment <path>:<line[-end]> <body>    Add a comment (headless, no server needed)
+  crit comment --reply-to <id> <body>        Reply to a comment
+  crit comment --json                        Bulk add comments from JSON on stdin
+  crit comment --clear                       Remove all comments
+  crit comments [--json] [--all] [review]    List unresolved comments (review-level first)
+
+Sharing:
+  crit share <file> [file...]                Share files to crit-web, print URL
+  crit fetch [--output <dir>]                Fetch comments from crit-web
+  crit unpublish [file...]                   Remove a shared review from crit-web
+
+GitHub PR sync:
+  crit pull [pr-number]                      Fetch PR comments into the review file
+  crit push [--dry-run] [pr-number]          Post review comments to a GitHub PR
+
+Setup & management:
+  crit install <agent>                       Install integration for an AI coding tool
+  crit check                                 Check integrations (staleness + missing)
+  crit status [--json]                       Print session info
+  crit stats [--json]                        Show lifetime review statistics
+  crit stop [--all]                          Stop the daemon
+  crit cleanup [--days N] [--force]          Delete stale review files (default: 7 days)
+  crit config [--generate]                   Show resolved configuration
+  crit auth login|logout|whoami              Manage crit-web authentication
+
+  Agents: %s, all
+
+Options:
+  -p, --port <port>           Port to listen on (default: random)
+      --host <host>           Listen host (default: 127.0.0.1; e.g. 0.0.0.0 for LAN)
+      --public-url <url>      Advertised base URL (e.g. https://machine.ts.net via tailscale serve)
+  -o, --output <dir>          Output directory for review file
+      --no-open               Don't auto-open browser
+      --no-ignore             Disable all file ignore patterns
+  -q, --quiet                 Suppress status output
+      --share-url <url>       Share service URL (e.g. https://crit.md or self-hosted)
+      --base-branch <branch>  Base branch to diff against (overrides auto-detection)
+      --scope <mode>          Diff scope for PR review: layer (default) or full-stack
+      --session <id>          Reconnect to an existing review session (from stderr or next_command)
+      --remote                Read PR files via GitHub API instead of local git
+      --qr                    Print QR code of share URL (with crit share)
+  -v, --version               Print version
+
+Environment:
+  CRIT_SHARE_URL              Override the share service URL
+  CRIT_PUBLIC_URL             Override the advertised review URL (listen address unchanged)
+  CRIT_PORT                   Override the default port
+  CRIT_HOST                   Override the listen host (default 127.0.0.1)
+  CRIT_NO_UPDATE_CHECK        Disable update check on startup
+  CRIT_AUTH_TOKEN             Override the auth token (skip login)
+  CRIT_NO_INTEGRATION_CHECK   Disable staleness check and agent detection on startup
+
+Configuration:
+  Global: ~/.crit.config.json   Project: .crit.config.json (in repo root)
+  Run 'crit config' to see all keys and resolved values.
+
+Learn more: https://crit.md
+`, strings.Join(availableIntegrations(), ", "))
+}
+
+func runPlanHookCommand(args []string) {
+	mode := "claude"
+	for i := 0; i < len(args); i++ {
+		arg := args[i]
+		switch {
+		case arg == "--mode":
+			if i+1 >= len(args) {
+				fmt.Fprintln(os.Stderr, "Error: --mode requires a value")
+				os.Exit(1)
+			}
+			i++
+			mode = args[i]
+		case strings.HasPrefix(arg, "--mode="):
+			mode = strings.TrimPrefix(arg, "--mode=")
+		default:
+			fmt.Fprintf(os.Stderr, "Unknown plan-hook flag: %s\n", arg)
+			os.Exit(1)
+		}
+	}
+
+	switch mode {
+	case "claude", "":
+		runPlanHook()
+	case "codex":
+		runCodexPlanHook()
+	default:
+		fmt.Fprintf(os.Stderr, "Unknown plan-hook mode: %s\n", mode)
+		os.Exit(1)
+	}
+}
+
+func printConfigHelp() {
+	fmt.Fprintf(os.Stderr, `crit config — show resolved configuration
+
+Prints the merged configuration from global and project config files as JSON.
+CLI flags and environment variables are not reflected in this output.
+
+Config files:
+  ~/.crit.config.json          Global config (applies to all projects)
+  .crit.config.json            Project config (in repo root)
+
+Precedence (highest to lowest):
+  1. CLI flags / env vars
+  2. Project config
+  3. Global config
+  4. Built-in defaults
+
+Available keys:
+  port              int       Port to listen on (default: random)
+  host              string    Listen host (default: 127.0.0.1; e.g. 0.0.0.0 for LAN)
+  no_open           bool      Don't auto-open browser (default: false)
+  share_url         string    Share service URL (global config only)
+  proxy_auth        bool      Proxy auth mode (config-only, no flag/env). false (default) —
+                              local server contacts crit-web directly. true — browser opens
+                              crit-web in a popup, authenticates there (e.g. via SSO), and
+                              proxies share/pull/unpublish/re-share through a MessagePort.
+                              Use when crit-web is behind an SSO reverse proxy.
+  quiet             bool      Suppress status output (default: false)
+  output            string    Output directory for review file
+  author            string    Your name for comments (default: git config user.name)
+  base_branch       string    Base branch to diff against (overrides auto-detection)
+  vcs                    string    Preferred VCS backend: git, sl, or jj (default: auto-detect)
+  ignore_patterns        []string  Gitignore-style patterns to exclude files from review
+  auto_viewed_patterns   []string  Patterns whose files are auto-marked viewed once per launch
+  no_integration_check   bool      Skip integration staleness check (default: false)
+  no_update_check        bool      Disable update check on startup (default: false)
+  cleanup_on_approve     bool      Auto-delete review file when approved (default: true)
+  notify_on_round_ready  bool      Desktop notification when a round is ready (default: false)
+  disable_stats          bool      Disable session stats recording (default: false)
+  open_cmd               string    Custom browser/open command
+  agent_cmd              string    Shell command to send comments to an AI agent (e.g. "claude -p")
+  auth_token             string    Authentication token for crit-web share service
+  plan_approve_mode      string    Claude Code mode after plan approval (default: unset)
+  close_on_approve_after_ms int    Auto-close the review tab N ms after Approve (default: unset/disabled)
+
+Note: agent_cmd, auth_token, host, open_cmd, share_url, plan_approve_mode, and
+close_on_approve_after_ms are global-only (~/.crit.config.json). Project-level
+.crit.config.json cannot override them for security reasons.
+
+Ignore pattern syntax:
+  *.lock            Match files by extension (anywhere in tree)
+  vendor/           Match all files under a directory
+  package-lock.json Match exact filename (anywhere in tree)
+  generated/*.pb.go Match with path prefix (filepath.Match syntax)
+
+Example config:
+  {
+    "port": 3456,
+    "share_url": "https://crit.md",
+    "ignore_patterns": ["*.lock", "*.min.js", "vendor/", "generated/"]
+  }
+`)
+}
+
+func printVersion() {
+	line := "crit " + version
+	var details []string
+	if date != "unknown" {
+		details = append(details, date)
+	}
+	if commit != "unknown" {
+		short := commit
+		if len(short) > 7 {
+			short = short[:7]
+		}
+		details = append(details, short)
+	}
+	if len(details) > 0 {
+		line += " (" + strings.Join(details, ", ") + ")"
+	}
+	fmt.Println(line)
+	fmt.Println("Inline code review for AI agent workflows")
+}
